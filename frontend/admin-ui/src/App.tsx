@@ -11,7 +11,7 @@ export function App() {
         </nav>
         <span>
           {keycloak.tokenParsed?.preferred_username}{' '}
-          <button onClick={() => keycloak.logout()} type="button">
+          <button onClick={() => keycloak.logout({ redirectUri: window.location.origin })} type="button">
             Sign out
           </button>
         </span>
