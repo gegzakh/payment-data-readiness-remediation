@@ -50,6 +50,20 @@ public static class Permissions
         public const string DrillDown = "validation.drilldown";
     }
 
+    public static class Remediation
+    {
+        public const string Read = "remediation.read";
+
+        /// <summary>Turns validation findings into cases and edits proposals as the maker (FR-WF-002).</summary>
+        public const string Write = "remediation.write";
+
+        /// <summary>Approves, returns, rejects or grants an exception as the checker (FR-WF-004).</summary>
+        public const string Approve = "remediation.approve";
+
+        /// <summary>Applies approved corrections to a source system and reverses them (FR-WB-003, FR-WB-007).</summary>
+        public const string WriteBack = "remediation.writeback";
+    }
+
     public static class Settings
     {
         public const string Read = "settings.read";
@@ -76,6 +90,10 @@ public static class Permissions
         Validation.Read,
         Validation.Run,
         Validation.DrillDown,
+        Remediation.Read,
+        Remediation.Write,
+        Remediation.Approve,
+        Remediation.WriteBack,
         Settings.Read,
         Settings.Write
     ];

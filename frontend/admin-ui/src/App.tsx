@@ -8,7 +8,8 @@ export function App() {
         <span className="shell__brand">PDR Admin</span>
         <nav>
           <Link to="/readiness">Readiness</Link> <Link to="/sources">Sources</Link>{' '}
-          <Link to="/ingestion">Ingestion</Link> <Link to="/rules">Rules</Link> <Link to="/audit">Audit</Link>{' '}
+          <Link to="/ingestion">Ingestion</Link> <Link to="/remediation">Remediation</Link>{' '}
+          <Link to="/writeback">Write-back</Link> <Link to="/rules">Rules</Link> <Link to="/audit">Audit</Link>{' '}
           <Link to="/releases">Releases</Link> <Link to="/settings">Settings</Link>
         </nav>
         <span>

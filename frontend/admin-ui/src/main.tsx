@@ -6,6 +6,8 @@ import { App } from './App';
 import { AuditPage } from './pages/AuditPage';
 import { IngestionPage } from './pages/IngestionPage';
 import { ReadinessPage } from './pages/ReadinessPage';
+import { RemediationPage } from './pages/RemediationPage';
+import { WriteBackPage } from './pages/WriteBackPage';
 import { SourcesPage } from './pages/SourcesPage';
 import { ReleasesAdminPage } from './pages/ReleasesAdminPage';
 import { RulesAdminPage } from './pages/RulesAdminPage';
@@ -29,6 +31,8 @@ initKeycloak()
                 <Route element={<ReadinessPage />} path="readiness" />
                 <Route element={<SourcesPage />} path="sources" />
                 <Route element={<IngestionPage />} path="ingestion" />
+                <Route element={<RemediationPage />} path="remediation" />
+                <Route element={<WriteBackPage />} path="writeback" />
                 <Route element={<RulesAdminPage />} path="rules" />
                 <Route element={<AuditPage />} path="audit" />
                 <Route element={<ReleasesAdminPage />} path="releases" />

@@ -118,6 +118,43 @@ public static class ValidationEndpoints
             .WithSummary("Breaks exposure down by scheme, source, party role, country, classification or issue.")
             .Produces<ProfileDto>();
 
+        var internalRuns = app.MapGroup("/internal/v1/validation/runs").WithTags("Internal").ExcludeFromDescription();
+
+        internalRuns.MapGet("/latest", async (
+                HttpContext httpContext,
+                ISender sender,
+                CancellationToken cancellationToken) =>
+            {
+                var result = await sender.SendAsync(new GetLatestRunQuery(), cancellationToken);
+                return result.ToHttpResult(httpContext);
+            })
+            .RequireAuthorization(Permissions.Remediation.Write)
+            .WithName("GetLatestRunForRemediation");
+
+        internalRuns.MapGet("/{runId:guid}", async (
+                Guid runId,
+                HttpContext httpContext,
+                ISender sender,
+                CancellationToken cancellationToken) =>
+            {
+                var result = await sender.SendAsync(new GetRunByIdQuery(runId), cancellationToken);
+                return result.ToHttpResult(httpContext);
+            })
+            .RequireAuthorization(Permissions.Remediation.Write)
+            .WithName("GetRunForRemediation");
+
+        internalRuns.MapGet("/{runId:guid}/assessments", async (
+                Guid runId,
+                HttpContext httpContext,
+                ISender sender,
+                CancellationToken cancellationToken) =>
+            {
+                var result = await sender.SendAsync(new ExportRunAssessmentsQuery(runId), cancellationToken);
+                return result.ToHttpResult(httpContext);
+            })
+            .RequireAuthorization(Permissions.Remediation.Write)
+            .WithName("ExportRunAssessmentsForRemediation");
+
         return app;
     }
 }

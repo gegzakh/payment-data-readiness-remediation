@@ -19,6 +19,7 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         await SeedFoundationReleaseAsync(cancellationToken);
         await SeedRulesAndAuditReleaseAsync(cancellationToken);
         await SeedReadinessReleaseAsync(cancellationToken);
+        await SeedRemediationReleaseAsync(cancellationToken);
     }
 
     private async Task SeedSettingsAsync(CancellationToken cancellationToken)
@@ -203,6 +204,73 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
             "Authentication and permission failures return a problem document",
             "401 and 403 responses now carry the same ProblemDetails body, correlation id and error code as every other failure instead of an empty response.",
             sortOrder: 7,
+            references: null);
+
+        release.Publish("system", clock.UtcNow);
+
+        context.Releases.Add(release);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedRemediationReleaseAsync(CancellationToken cancellationToken)
+    {
+        if (await ExistsAsync("0.4.0", cancellationToken))
+        {
+            return;
+        }
+
+        var release = Release.CreateDraft(
+            "0.4.0",
+            "Remediation, approval and write-back",
+            DateOnly.FromDateTime(clock.UtcNow.UtcDateTime),
+            "Defective addresses become worked cases with evidence-backed corrections, an independent approval and a reversible write-back to the owning source.");
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Remediation",
+            "One prioritised case per defective party address",
+            "Validation findings are folded into a single case per party and address, however many payments they appeared in, carrying the original values, the failing rules, the affected schemes, the exposure after the cutover, the owning source and an SLA date. Priority combines rejection volume, scheme criticality, proximity to the cutover, recurrence and confidence.",
+            sortOrder: 0,
+            references: ["FR-REM-001", "FR-REM-002", "FR-REM-004"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Remediation",
+            "Deterministic correction proposals with field-level confidence",
+            "Corrections are parsed from the source values and approved reference data, and expose their method, per-field and overall confidence, ambiguities and alternatives. Anything machine-assisted is marked as needing human verification and can never be approved in bulk.",
+            sortOrder: 1,
+            references: ["FR-REM-005", "FR-REM-006"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Remediation",
+            "Maker-checker workflow with evidence, exceptions and full history",
+            "A maker edits the correction, attaches evidence and submits; a different person approves, returns, rejects, dismisses or grants a time-bound exception with a rationale. Corrections that add data the source never held require evidence, and expired exceptions stay visible as exposure rather than counting as compliant.",
+            sortOrder: 2,
+            references: ["FR-WF-001", "FR-WF-004", "FR-WF-005", "FR-WF-006"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Remediation",
+            "Previewable bulk actions and customer campaigns",
+            "Bulk submit, approve and assign show what they would touch — matched, eligible and blocked counts, the exposure, the lowest confidence, sample cases and why cases are held back — before anything is applied. Campaigns route cases to internal queues or corporate customers and track their progress.",
+            sortOrder: 3,
+            references: ["FR-REM-007", "FR-WF-007"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Write-back",
+            "Reversible, idempotent write-back with read-after-write reconciliation",
+            "Each source declares the fields it authorises, its API or export mode, maintenance window, per-run record limit and rollback method. Runs are previewed field by field, refuse stale records, carry an idempotency key and per-record correlation ids, read the record back to prove the correction landed, reconcile the counts and can be rolled back in full.",
+            sortOrder: 4,
+            references: ["FR-WB-001", "FR-WB-002", "FR-WB-004", "FR-WB-005", "FR-WB-007"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Admin UI",
+            "Remediation queue and write-back screens",
+            "The queue shows the funnel, filters and case detail with the original values beside the proposal; approvers record decisions, and operators preview, apply, reconcile and roll back write-back runs.",
+            sortOrder: 5,
             references: null);
 
         release.Publish("system", clock.UtcNow);
