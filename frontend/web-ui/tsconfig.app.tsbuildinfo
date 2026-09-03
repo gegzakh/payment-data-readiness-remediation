@@ -1,1 +1,0 @@
-{"root":["./src/App.tsx","./src/main.tsx","./src/api/client.ts","./src/api/releases.test.ts","./src/api/releases.ts","./src/components/Pagination.tsx","./src/components/ReleaseCard.tsx","./src/pages/ReleaseNotesPage.tsx","./src/test/setup.ts"],"version":"5.9.3"}
