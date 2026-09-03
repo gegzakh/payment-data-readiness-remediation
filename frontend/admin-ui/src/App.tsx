@@ -7,8 +7,9 @@ export function App() {
       <header className="shell__header">
         <span className="shell__brand">PDR Admin</span>
         <nav>
-          <Link to="/rules">Rules</Link> <Link to="/audit">Audit</Link> <Link to="/releases">Releases</Link>{' '}
-          <Link to="/settings">Settings</Link>
+          <Link to="/readiness">Readiness</Link> <Link to="/sources">Sources</Link>{' '}
+          <Link to="/ingestion">Ingestion</Link> <Link to="/rules">Rules</Link> <Link to="/audit">Audit</Link>{' '}
+          <Link to="/releases">Releases</Link> <Link to="/settings">Settings</Link>
         </nav>
         <span>
           {keycloak.tokenParsed?.preferred_username}{' '}

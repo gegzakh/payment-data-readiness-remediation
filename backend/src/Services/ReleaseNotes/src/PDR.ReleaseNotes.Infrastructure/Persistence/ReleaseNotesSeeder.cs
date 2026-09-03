@@ -18,6 +18,7 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         await SeedSettingsAsync(cancellationToken);
         await SeedFoundationReleaseAsync(cancellationToken);
         await SeedRulesAndAuditReleaseAsync(cancellationToken);
+        await SeedReadinessReleaseAsync(cancellationToken);
     }
 
     private async Task SeedSettingsAsync(CancellationToken cancellationToken)
@@ -120,6 +121,65 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
             "Scheme owners author rule versions and activate or roll them back; auditors filter the ledger and verify chain integrity.",
             sortOrder: 3,
             references: null);
+
+        release.Publish("system", clock.UtcNow);
+
+        context.Releases.Add(release);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedReadinessReleaseAsync(CancellationToken cancellationToken)
+    {
+        if (await ExistsAsync("0.3.0", cancellationToken))
+        {
+            return;
+        }
+
+        var release = Release.CreateDraft(
+            "0.3.0",
+            "Sources, ingestion and address readiness",
+            DateOnly.FromDateTime(clock.UtcNow.UtcDateTime),
+            "Payment party data can now be registered, ingested and assessed against today's and the post-cutover rules, with the payments at risk quantified.");
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Sources",
+            "Source inventory with mappings, lineage and owner attestation",
+            "Every system holding payment-party addresses is registered with its ISO 20022 field mappings, lineage, scan coverage and a named owner whose attestation goes stale on a configurable interval.",
+            sortOrder: 0,
+            references: ["FR-SRC-001", "FR-SRC-003", "FR-SRC-005", "FR-SRC-006"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Ingestion",
+            "ISO 20022 XML and CSV ingestion with quarantine and reconciliation",
+            "Uploads are size-, type- and content-checked before parsing; unsafe payloads are quarantined, duplicates are detected by content hash, and every batch reconciles input, parsed, duplicate, excluded and failed counts. Batches are idempotent, retryable and cancellable.",
+            sortOrder: 1,
+            references: ["FR-ING-001", "FR-ING-002", "FR-ING-004", "FR-ING-005", "FR-ING-006"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Validation",
+            "Address classification and current versus post-cutover validation",
+            "Each address is classified as structured, hybrid, unstructured, absent or unrecognized, then evaluated against the current and the future ruleset. Findings carry rule, field, severity, expectation, actual value and an evidence pointer back to the source record.",
+            sortOrder: 2,
+            references: ["FR-VAL-001", "FR-VAL-002", "FR-VAL-003", "FR-VAL-005"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Validation",
+            "Portfolio readiness, exposure profiles and payments at risk",
+            "Readiness today and after the cutover, the payments at risk and the dominant issues are aggregated across the latest run of every batch, and broken down by scheme, source, party role, country, classification or issue.",
+            sortOrder: 3,
+            references: ["FR-VAL-006", "FR-VAL-010"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Admin UI",
+            "Readiness, sources and ingestion screens",
+            "Operators upload and monitor batches, run validation, and drill from portfolio readiness into individual records; address detail stays masked unless the user holds the drill-down permission.",
+            sortOrder: 4,
+            references: ["FR-VAL-008"]);
 
         release.Publish("system", clock.UtcNow);
 
