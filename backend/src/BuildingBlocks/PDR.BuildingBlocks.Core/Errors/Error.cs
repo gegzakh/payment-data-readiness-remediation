@@ -19,10 +19,13 @@ public enum ErrorType
 /// </summary>
 public sealed record Error(string Code, string Message, ErrorType Type = ErrorType.Failure)
 {
+    /// <summary>Shared instance so two errors without validation details compare equal.</summary>
+    private static readonly IReadOnlyDictionary<string, string[]> NoValidationErrors =
+        new Dictionary<string, string[]>();
+
     public static readonly Error None = new(string.Empty, string.Empty);
 
-    public IReadOnlyDictionary<string, string[]> ValidationErrors { get; init; } =
-        new Dictionary<string, string[]>();
+    public IReadOnlyDictionary<string, string[]> ValidationErrors { get; init; } = NoValidationErrors;
 
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
 

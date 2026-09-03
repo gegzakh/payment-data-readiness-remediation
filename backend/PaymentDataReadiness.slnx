@@ -15,6 +15,17 @@
     <Project Path="src/Gateway/PDR.Gateway/PDR.Gateway.csproj" />
   </Folder>
   <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/Audit/" />
+  <Folder Name="/src/Services/Audit/src/">
+    <Project Path="src/Services/Audit/src/PDR.Audit.Api/PDR.Audit.Api.csproj" />
+    <Project Path="src/Services/Audit/src/PDR.Audit.Application/PDR.Audit.Application.csproj" />
+    <Project Path="src/Services/Audit/src/PDR.Audit.Domain/PDR.Audit.Domain.csproj" />
+    <Project Path="src/Services/Audit/src/PDR.Audit.Infrastructure/PDR.Audit.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Audit/tests/">
+    <Project Path="src/Services/Audit/tests/PDR.Audit.IntegrationTests/PDR.Audit.IntegrationTests.csproj" />
+    <Project Path="src/Services/Audit/tests/PDR.Audit.UnitTests/PDR.Audit.UnitTests.csproj" />
+  </Folder>
   <Folder Name="/src/Services/ReleaseNotes/" />
   <Folder Name="/src/Services/ReleaseNotes/src/">
     <Project Path="src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Api/PDR.ReleaseNotes.Api.csproj" />
@@ -25,5 +36,16 @@
   <Folder Name="/src/Services/ReleaseNotes/tests/">
     <Project Path="src/Services/ReleaseNotes/tests/PDR.ReleaseNotes.IntegrationTests/PDR.ReleaseNotes.IntegrationTests.csproj" />
     <Project Path="src/Services/ReleaseNotes/tests/PDR.ReleaseNotes.UnitTests/PDR.ReleaseNotes.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Rules/" />
+  <Folder Name="/src/Services/Rules/src/">
+    <Project Path="src/Services/Rules/src/PDR.Rules.Api/PDR.Rules.Api.csproj" />
+    <Project Path="src/Services/Rules/src/PDR.Rules.Application/PDR.Rules.Application.csproj" />
+    <Project Path="src/Services/Rules/src/PDR.Rules.Domain/PDR.Rules.Domain.csproj" />
+    <Project Path="src/Services/Rules/src/PDR.Rules.Infrastructure/PDR.Rules.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Rules/tests/">
+    <Project Path="src/Services/Rules/tests/PDR.Rules.IntegrationTests/PDR.Rules.IntegrationTests.csproj" />
+    <Project Path="src/Services/Rules/tests/PDR.Rules.UnitTests/PDR.Rules.UnitTests.csproj" />
   </Folder>
 </Solution>

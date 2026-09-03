@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PDR.BuildingBlocks.Core\PDR.BuildingBlocks.Core.csproj" />
     <ProjectReference Include="..\PDR.BuildingBlocks.Security\PDR.BuildingBlocks.Security.csproj" />
+    <ProjectReference Include="..\PDR.BuildingBlocks.Persistence\PDR.BuildingBlocks.Persistence.csproj" />
     <ProjectReference Include="..\PDR.BuildingBlocks.Observability\PDR.BuildingBlocks.Observability.csproj" />
   </ItemGroup>
 

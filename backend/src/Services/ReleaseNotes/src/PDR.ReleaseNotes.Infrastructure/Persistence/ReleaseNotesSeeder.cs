@@ -16,7 +16,8 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
         await SeedSettingsAsync(cancellationToken);
-        await SeedFirstReleaseAsync(cancellationToken);
+        await SeedFoundationReleaseAsync(cancellationToken);
+        await SeedRulesAndAuditReleaseAsync(cancellationToken);
     }
 
     private async Task SeedSettingsAsync(CancellationToken cancellationToken)
@@ -40,9 +41,9 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task SeedFirstReleaseAsync(CancellationToken cancellationToken)
+    private async Task SeedFoundationReleaseAsync(CancellationToken cancellationToken)
     {
-        if (await context.Releases.AnyAsync(cancellationToken))
+        if (await ExistsAsync("0.1.0", cancellationToken))
         {
             return;
         }
@@ -74,4 +75,58 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         context.Releases.Add(release);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    private async Task SeedRulesAndAuditReleaseAsync(CancellationToken cancellationToken)
+    {
+        if (await ExistsAsync("0.2.0", cancellationToken))
+        {
+            return;
+        }
+
+        var release = Release.CreateDraft(
+            "0.2.0",
+            "Scheme rules and evidential audit",
+            DateOnly.FromDateTime(clock.UtcNow.UtcDateTime),
+            "Validation rules become versioned data a scheme owner can change, and every change is recorded in a tamper-evident ledger.");
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Rules",
+            "Versioned, dated scheme rulesets",
+            "Rules are data: required, maximum length, pattern, allowed and prohibited values, structured-only. Versions are drafted, activated from a date and can be rolled back by re-activating an earlier one.",
+            sortOrder: 0,
+            references: ["FR-RUL-001", "FR-RUL-003", "FR-RUL-004"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Rules",
+            "Scheme and country reference data",
+            "Payment schemes carry their structured-address cutover date, and countries their postcode and SEPA attributes, so rules can be evaluated for current and post-cutover behaviour.",
+            sortOrder: 1,
+            references: ["FR-RUL-002"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Audit",
+            "Append-only hash-chained audit ledger",
+            "Every recorded action links to its predecessor by hash, is searchable by service, action, entity, actor, correlation id and time, and can be verified end to end to detect edits made outside the application.",
+            sortOrder: 2,
+            references: ["FR-AUD-001", "FR-AUD-002"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Admin UI",
+            "Rules and audit administration screens",
+            "Scheme owners author rule versions and activate or roll them back; auditors filter the ledger and verify chain integrity.",
+            sortOrder: 3,
+            references: null);
+
+        release.Publish("system", clock.UtcNow);
+
+        context.Releases.Add(release);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private Task<bool> ExistsAsync(string version, CancellationToken cancellationToken) =>
+        context.Releases.AnyAsync(release => release.Version == version, cancellationToken);
 }
