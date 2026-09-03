@@ -92,4 +92,37 @@
     <Project Path="src/Services/Remediation/tests/PDR.Remediation.IntegrationTests/PDR.Remediation.IntegrationTests.csproj" />
     <Project Path="src/Services/Remediation/tests/PDR.Remediation.UnitTests/PDR.Remediation.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/src/Services/Simulation/" />
+  <Folder Name="/src/Services/Simulation/src/">
+    <Project Path="src/Services/Simulation/src/PDR.Simulation.Api/PDR.Simulation.Api.csproj" />
+    <Project Path="src/Services/Simulation/src/PDR.Simulation.Application/PDR.Simulation.Application.csproj" />
+    <Project Path="src/Services/Simulation/src/PDR.Simulation.Domain/PDR.Simulation.Domain.csproj" />
+    <Project Path="src/Services/Simulation/src/PDR.Simulation.Infrastructure/PDR.Simulation.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Simulation/tests/">
+    <Project Path="src/Services/Simulation/tests/PDR.Simulation.IntegrationTests/PDR.Simulation.IntegrationTests.csproj" />
+    <Project Path="src/Services/Simulation/tests/PDR.Simulation.UnitTests/PDR.Simulation.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Reporting/" />
+  <Folder Name="/src/Services/Reporting/src/">
+    <Project Path="src/Services/Reporting/src/PDR.Reporting.Api/PDR.Reporting.Api.csproj" />
+    <Project Path="src/Services/Reporting/src/PDR.Reporting.Application/PDR.Reporting.Application.csproj" />
+    <Project Path="src/Services/Reporting/src/PDR.Reporting.Domain/PDR.Reporting.Domain.csproj" />
+    <Project Path="src/Services/Reporting/src/PDR.Reporting.Infrastructure/PDR.Reporting.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Reporting/tests/">
+    <Project Path="src/Services/Reporting/tests/PDR.Reporting.IntegrationTests/PDR.Reporting.IntegrationTests.csproj" />
+    <Project Path="src/Services/Reporting/tests/PDR.Reporting.UnitTests/PDR.Reporting.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Notifications/" />
+  <Folder Name="/src/Services/Notifications/src/">
+    <Project Path="src/Services/Notifications/src/PDR.Notifications.Api/PDR.Notifications.Api.csproj" />
+    <Project Path="src/Services/Notifications/src/PDR.Notifications.Application/PDR.Notifications.Application.csproj" />
+    <Project Path="src/Services/Notifications/src/PDR.Notifications.Domain/PDR.Notifications.Domain.csproj" />
+    <Project Path="src/Services/Notifications/src/PDR.Notifications.Infrastructure/PDR.Notifications.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Notifications/tests/">
+    <Project Path="src/Services/Notifications/tests/PDR.Notifications.IntegrationTests/PDR.Notifications.IntegrationTests.csproj" />
+    <Project Path="src/Services/Notifications/tests/PDR.Notifications.UnitTests/PDR.Notifications.UnitTests.csproj" />
+  </Folder>
 </Solution>

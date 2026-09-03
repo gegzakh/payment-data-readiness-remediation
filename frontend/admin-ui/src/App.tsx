@@ -9,8 +9,11 @@ export function App() {
         <nav>
           <Link to="/readiness">Readiness</Link> <Link to="/sources">Sources</Link>{' '}
           <Link to="/ingestion">Ingestion</Link> <Link to="/remediation">Remediation</Link>{' '}
-          <Link to="/writeback">Write-back</Link> <Link to="/rules">Rules</Link> <Link to="/audit">Audit</Link>{' '}
-          <Link to="/releases">Releases</Link> <Link to="/settings">Settings</Link>
+          <Link to="/writeback">Write-back</Link> <Link to="/simulation">Simulation</Link>{' '}
+          <Link to="/testing">Testing</Link> <Link to="/cutover">Cutover</Link>{' '}
+          <Link to="/dashboards">Dashboards</Link> <Link to="/notifications">Notifications</Link>{' '}
+          <Link to="/rules">Rules</Link> <Link to="/audit">Audit</Link> <Link to="/releases">Releases</Link>{' '}
+          <Link to="/settings">Settings</Link>
         </nav>
         <span>
           {keycloak.tokenParsed?.preferred_username}{' '}

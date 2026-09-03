@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PDR.Simulation.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\PDR.BuildingBlocks.Application\PDR.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\PDR.BuildingBlocks.Security\PDR.BuildingBlocks.Security.csproj" />
+    <ProjectReference Include="..\PDR.Simulation.Domain\PDR.Simulation.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
