@@ -40,9 +40,10 @@ cd ../admin-ui && npm install && npm run dev               # :5174
 ## Checks
 
 ```bash
-dotnet build backend/PaymentDataReadiness.slnx -warnaserror
-dotnet test backend/PaymentDataReadiness.slnx        # integration tests need Docker
+cd backend                                           # global.json selects the SDK and test runner
+dotnet build PaymentDataReadiness.slnx -warnaserror
+dotnet test PaymentDataReadiness.slnx                # integration tests need Docker
 
-cd frontend/web-ui  && npm run lint && npm run typecheck && npm test && npm run build
+cd ../frontend/web-ui  && npm run lint && npm run typecheck && npm test && npm run build
 cd ../admin-ui      && npm run lint && npm run typecheck && npm test && npm run build
 ```

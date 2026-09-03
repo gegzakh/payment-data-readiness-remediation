@@ -22,7 +22,8 @@ Architecture and design decisions live in `docs/architecture/ARCHITECTURE.md` an
 
 ## Definition of done for a change
 
-1. `dotnet build backend/PaymentDataReadiness.slnx -warnaserror` and `dotnet test backend/PaymentDataReadiness.slnx` pass.
+1. From `backend/` (global.json selects the SDK and the Microsoft.Testing.Platform runner):
+   `dotnet build PaymentDataReadiness.slnx -warnaserror` and `dotnet test PaymentDataReadiness.slnx` pass.
 2. Frontend touched? `npm run lint && npm run typecheck && npm test && npm run build` in that app.
 3. Tests that carry value: domain rules and pure logic as unit tests, HTTP behaviour and persistence as
    integration tests against a Testcontainers PostgreSQL, authorization as security tests.

@@ -8,17 +8,22 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        # global.json selects the SDK and the Microsoft.Testing.Platform runner; it is only
+        # picked up when commands run from backend/.
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: backend/global.json
       - name: Restore
-        run: dotnet restore backend/PaymentDataReadiness.slnx
+        run: dotnet restore PaymentDataReadiness.slnx
       - name: Build
-        run: dotnet build backend/PaymentDataReadiness.slnx --no-restore -warnaserror
+        run: dotnet build PaymentDataReadiness.slnx --no-restore -warnaserror
       - name: Test
-        run: dotnet test backend/PaymentDataReadiness.slnx --no-build
+        run: dotnet test PaymentDataReadiness.slnx --no-build
 
   frontend:
     runs-on: ubuntu-latest
