@@ -89,6 +89,11 @@ export function ReadinessPage() {
 
       <div className="card">
         <h2>Exposure profile</h2>
+        <p className="muted">
+          Counts cover the assessed records of the latest run per batch — excluded and unassessable records
+          are left out. Readiness is the compliant share, so a warning counts as neither compliant nor
+          rejected. Under the Issue dimension a record appears under every rule it breached, so rows overlap.
+        </p>
         <label>
           Dimension{' '}
           <select onChange={(event) => setDimension(event.target.value as ProfileDimension)} value={dimension}>
@@ -104,9 +109,11 @@ export function ReadinessPage() {
           <thead>
             <tr>
               <th>{dimension}</th>
-              <th>Records</th>
+              <th>Records assessed</th>
               <th>Rejected today</th>
               <th>Rejected after cutover</th>
+              <th>Warnings today</th>
+              <th>Warnings after cutover</th>
               <th>Readiness today</th>
               <th>Readiness after cutover</th>
             </tr>
@@ -118,6 +125,8 @@ export function ReadinessPage() {
                 <td>{row.recordCount.toLocaleString()}</td>
                 <td>{row.currentRejectedCount.toLocaleString()}</td>
                 <td>{row.futureRejectedCount.toLocaleString()}</td>
+                <td>{row.currentWarningCount.toLocaleString()}</td>
+                <td>{row.futureWarningCount.toLocaleString()}</td>
                 <td>{row.currentReadinessPercent.toFixed(1)}%</td>
                 <td>{row.futureReadinessPercent.toFixed(1)}%</td>
               </tr>

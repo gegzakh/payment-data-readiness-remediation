@@ -84,6 +84,25 @@ public static class ServiceDefaults
     {
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UsePdrCorrelation();
+
+        // Authentication and authorization short-circuit before any handler runs, so without this a
+        // client gets a bodyless 401/403 instead of the ProblemDetails every other failure returns.
+        app.UseStatusCodePages(context =>
+        {
+            var response = context.HttpContext.Response;
+            if (response.StatusCode is not (StatusCodes.Status401Unauthorized or StatusCodes.Status403Forbidden))
+            {
+                return Task.CompletedTask;
+            }
+
+            var error = response.StatusCode == StatusCodes.Status401Unauthorized
+                ? Core.Errors.Error.Unauthorized("AUTH.UNAUTHENTICATED", "Authentication is required for this endpoint.")
+                : Core.Errors.Error.Forbidden("AUTH.FORBIDDEN", "The caller does not hold the required permission.");
+
+            var problem = PdrProblemDetails.Create(error, context.HttpContext);
+            return response.WriteAsJsonAsync(problem, options: null, contentType: "application/problem+json");
+        });
+
         app.UseCors(CorsPolicy);
         app.UseRateLimiter();
         app.UseAuthentication();

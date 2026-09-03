@@ -167,6 +167,35 @@ public sealed class ValidationApiTests(ValidationApiFactory factory) : IClassFix
     }
 
     [Fact]
+    public async Task Profile_rows_count_the_assessed_population_and_score_issue_readiness()
+    {
+        var batchId = SeedBatch(
+            "CORE-DENOM",
+            Record(1),
+            Record(2, townName: null),
+            Record(3, isDuplicate: true));
+
+        var run = await RunAsync(batchId);
+
+        var profile = await _client.GetFromJsonAsync<ProfileDto>(
+            $"/api/v1/validation/profile?dimension=Source&runId={run.Id}", Json, Token);
+
+        var row = profile!.Rows.Should().ContainSingle(entry => entry.Key == "CORE-DENOM").Subject;
+        row.RecordCount.Should().Be(run.AssessedCount, "excluded records are outside the readiness denominator");
+        row.FutureRejectedCount.Should().Be(1);
+        row.FutureReadinessPercent.Should().BeApproximately(50m, 0.01m);
+
+        var issues = await _client.GetFromJsonAsync<ProfileDto>(
+            $"/api/v1/validation/profile?dimension=Issue&runId={run.Id}", Json, Token);
+
+        var issueRow = issues!.Rows.Should().ContainSingle(entry => entry.Key == "ADDR.TOWN.REQ").Subject;
+        issueRow.RecordCount.Should().Be(1);
+        issueRow.FutureRejectedCount.Should().Be(1);
+        issueRow.FutureReadinessPercent.Should().Be(0m);
+        issueRow.CurrentReadinessPercent.Should().Be(100m, "the town rule only bites after cutover");
+    }
+
+    [Fact]
     public async Task Runs_are_listed_newest_first_and_filterable_by_batch()
     {
         var batchId = SeedBatch("CORE-LIST", Record(1));

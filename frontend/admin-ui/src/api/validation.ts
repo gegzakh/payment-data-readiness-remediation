@@ -111,6 +111,8 @@ export interface ProfileRowDto {
   recordCount: number;
   currentRejectedCount: number;
   futureRejectedCount: number;
+  currentWarningCount: number;
+  futureWarningCount: number;
   currentReadinessPercent: number;
   futureReadinessPercent: number;
 }

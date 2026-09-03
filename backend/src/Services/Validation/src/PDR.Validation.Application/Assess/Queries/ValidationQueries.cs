@@ -39,6 +39,18 @@ public static class ValidationDefaults
     public const int TopIssueCount = 10;
 }
 
+internal static class LatestRuns
+{
+    /// <summary>Only the newest completed run per batch counts, so re-validating a batch replaces its exposure.</summary>
+    public static Task<List<Guid>> IdsAsync(IValidationDbContext context, CancellationToken cancellationToken) =>
+        context.Runs
+            .AsNoTracking()
+            .Where(run => run.Status == ValidationRunStatus.Completed)
+            .GroupBy(run => run.BatchId)
+            .Select(group => group.OrderByDescending(run => run.StartedAtUtc).Select(run => run.Id).First())
+            .ToListAsync(cancellationToken);
+}
+
 internal static class ValidationPageSize
 {
     public static async Task<int> ResolveAsync(ISettingsReader settings, int? requested, CancellationToken cancellationToken)
@@ -180,91 +192,95 @@ public sealed class GetProfileQueryHandler(IValidationDbContext context, IClock 
 {
     public async Task<Result<ProfileDto>> HandleAsync(GetProfileQuery request, CancellationToken cancellationToken)
     {
-        if (request.Dimension == ProfileDimension.Issue)
-        {
-            return await IssueProfileAsync(request, cancellationToken);
-        }
+        // The profile has to describe the same population as the portfolio tiles: one run per batch and
+        // assessed records only, so every row's count is the denominator of its readiness percentages.
+        List<Guid> runIds = request.RunId is { } runId
+            ? [runId]
+            : await LatestRuns.IdsAsync(context, cancellationToken);
 
-        var query = context.Assessments.AsNoTracking();
-        if (request.RunId is { } runId)
-        {
-            query = query.Where(assessment => assessment.RunId == runId);
-        }
-
-        var rows = await query
-            .Select(assessment => new
-            {
-                Key = request.Dimension == ProfileDimension.Scheme
-                    ? assessment.SchemeCode ?? "UNKNOWN"
-                    : request.Dimension == ProfileDimension.Source
-                        ? assessment.SourceCode
-                        : request.Dimension == ProfileDimension.PartyRole
-                            ? assessment.PartyRole.ToString()
-                            : request.Dimension == ProfileDimension.Country
-                                ? assessment.Country ?? "UNKNOWN"
-                                : assessment.Classification.ToString(),
+        var assessments = await context.Assessments
+            .AsNoTracking()
+            .Where(assessment => runIds.Contains(assessment.RunId))
+            .Where(assessment => assessment.CurrentOutcome != RecordOutcome.Excluded
+                && assessment.CurrentOutcome != RecordOutcome.UnableToAssess)
+            .Select(assessment => new AssessmentFacts(
+                assessment.Id,
+                assessment.SchemeCode ?? "UNKNOWN",
+                assessment.SourceCode,
+                assessment.PartyRole.ToString(),
+                assessment.Country ?? "UNKNOWN",
+                assessment.Classification.ToString(),
                 assessment.CurrentOutcome,
-                assessment.FutureOutcome
-            })
+                assessment.FutureOutcome))
             .ToListAsync(cancellationToken);
 
-        var profile = rows
-            .GroupBy(row => row.Key, StringComparer.Ordinal)
-            .Select(group => Row(group.Key, [.. group.Select(row => (row.CurrentOutcome, row.FutureOutcome))]))
-            .OrderByDescending(row => row.FutureRejectedCount)
-            .ThenBy(row => row.Key, StringComparer.Ordinal)
-            .ToList();
+        var rows = request.Dimension == ProfileDimension.Issue
+            ? await IssueRowsAsync(assessments, cancellationToken)
+            : assessments
+                .GroupBy(assessment => Key(assessment, request.Dimension), StringComparer.Ordinal)
+                .Select(group => Row(group.Key, group))
+                .ToList();
 
-        return new ProfileDto(request.Dimension, profile, clock.UtcNow);
+        return new ProfileDto(
+            request.Dimension,
+            [.. rows.OrderByDescending(row => row.FutureRejectedCount).ThenBy(row => row.Key, StringComparer.Ordinal)],
+            clock.UtcNow);
     }
 
-    private async Task<Result<ProfileDto>> IssueProfileAsync(GetProfileQuery request, CancellationToken cancellationToken)
+    /// <summary>A record appears under every rule it breached, so rows overlap by design.</summary>
+    private async Task<List<ProfileRowDto>> IssueRowsAsync(
+        List<AssessmentFacts> assessments,
+        CancellationToken cancellationToken)
     {
-        var query = context.Issues.AsNoTracking().Join(
-            context.Assessments.AsNoTracking(),
-            issue => issue.AssessmentId,
-            assessment => assessment.Id,
-            (issue, assessment) => new { issue.RuleCode, issue.Mode, assessment.RunId });
+        var assessmentIds = assessments.Select(assessment => assessment.Id).ToList();
 
-        if (request.RunId is { } runId)
-        {
-            query = query.Where(entry => entry.RunId == runId);
-        }
+        var issues = await context.Issues
+            .AsNoTracking()
+            .Where(issue => assessmentIds.Contains(issue.AssessmentId))
+            .Select(issue => new { issue.RuleCode, issue.AssessmentId })
+            .Distinct()
+            .ToListAsync(cancellationToken);
 
-        var issues = await query.ToListAsync(cancellationToken);
+        var byId = assessments.ToDictionary(assessment => assessment.Id);
 
-        var rows = issues
-            .GroupBy(entry => entry.RuleCode, StringComparer.Ordinal)
-            .Select(group => new ProfileRowDto(
-                group.Key,
-                group.Count(),
-                group.Count(entry => entry.Mode == RuleMode.Current),
-                group.Count(entry => entry.Mode == RuleMode.Future),
-                0m,
-                0m))
-            .OrderByDescending(row => row.RecordCount)
-            .ThenBy(row => row.Key, StringComparer.Ordinal)
-            .ToList();
-
-        return new ProfileDto(ProfileDimension.Issue, rows, clock.UtcNow);
+        return [.. issues
+            .GroupBy(issue => issue.RuleCode, StringComparer.Ordinal)
+            .Select(group => Row(group.Key, group.Select(issue => byId[issue.AssessmentId])))];
     }
 
-    private static ProfileRowDto Row(string key, IReadOnlyList<(RecordOutcome Current, RecordOutcome Future)> outcomes)
+    private static string Key(AssessmentFacts assessment, ProfileDimension dimension) => dimension switch
     {
-        var assessed = outcomes.Count(outcome =>
-            outcome.Current is not (RecordOutcome.Excluded or RecordOutcome.UnableToAssess));
+        ProfileDimension.Scheme => assessment.SchemeCode,
+        ProfileDimension.Source => assessment.SourceCode,
+        ProfileDimension.PartyRole => assessment.PartyRole,
+        ProfileDimension.Country => assessment.Country,
+        _ => assessment.Classification
+    };
 
-        var currentCompliant = outcomes.Count(outcome => outcome.Current == RecordOutcome.Compliant);
-        var futureCompliant = outcomes.Count(outcome => outcome.Future == RecordOutcome.Compliant);
+    private static ProfileRowDto Row(string key, IEnumerable<AssessmentFacts> group)
+    {
+        var assessments = group.ToList();
 
         return new ProfileRowDto(
             key,
-            outcomes.Count,
-            outcomes.Count(outcome => outcome.Current == RecordOutcome.Rejected),
-            outcomes.Count(outcome => outcome.Future == RecordOutcome.Rejected),
-            Percent(currentCompliant, assessed),
-            Percent(futureCompliant, assessed));
+            assessments.Count,
+            assessments.Count(assessment => assessment.Current == RecordOutcome.Rejected),
+            assessments.Count(assessment => assessment.Future == RecordOutcome.Rejected),
+            assessments.Count(assessment => assessment.Current == RecordOutcome.Warning),
+            assessments.Count(assessment => assessment.Future == RecordOutcome.Warning),
+            Percent(assessments.Count(assessment => assessment.Current == RecordOutcome.Compliant), assessments.Count),
+            Percent(assessments.Count(assessment => assessment.Future == RecordOutcome.Compliant), assessments.Count));
     }
+
+    private sealed record AssessmentFacts(
+        Guid Id,
+        string SchemeCode,
+        string SourceCode,
+        string PartyRole,
+        string Country,
+        string Classification,
+        RecordOutcome Current,
+        RecordOutcome Future);
 
     private static decimal Percent(int compliant, int assessed) =>
         assessed == 0 ? 0m : Math.Round(compliant * 100m / assessed, 2);
@@ -285,13 +301,7 @@ public sealed class GetReadinessSummaryQueryHandler(
             ValidationDefaults.TopIssueCount,
             cancellationToken);
 
-        // Only the newest completed run per batch counts, so re-validating a batch replaces its exposure.
-        var latestRunIds = await context.Runs
-            .AsNoTracking()
-            .Where(run => run.Status == ValidationRunStatus.Completed)
-            .GroupBy(run => run.BatchId)
-            .Select(group => group.OrderByDescending(run => run.StartedAtUtc).Select(run => run.Id).First())
-            .ToListAsync(cancellationToken);
+        var latestRunIds = await LatestRuns.IdsAsync(context, cancellationToken);
 
         var runs = await context.Runs
             .AsNoTracking()

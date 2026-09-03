@@ -181,6 +181,30 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
             sortOrder: 4,
             references: ["FR-VAL-008"]);
 
+        release.AddEntry(
+            ReleaseEntryType.Fix,
+            "Validation",
+            "Exposure profiles count the same population as the readiness tiles",
+            "Profile rows now cover the latest run per batch and assessed records only, report warnings alongside rejections, and score readiness per issue instead of showing zero.",
+            sortOrder: 5,
+            references: ["FR-VAL-006"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Fix,
+            "Ingestion",
+            "A re-upload without an idempotency key is refused as a duplicate",
+            "Replay protection is opt-in: only a caller-supplied idempotency key returns the original batch, so an unintended re-upload is answered by the duplicate check instead of silently succeeding.",
+            sortOrder: 6,
+            references: ["FR-ING-005"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Fix,
+            "Platform",
+            "Authentication and permission failures return a problem document",
+            "401 and 403 responses now carry the same ProblemDetails body, correlation id and error code as every other failure instead of an empty response.",
+            sortOrder: 7,
+            references: null);
+
         release.Publish("system", clock.UtcNow);
 
         context.Releases.Add(release);

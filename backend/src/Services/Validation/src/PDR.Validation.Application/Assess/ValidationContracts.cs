@@ -64,12 +64,19 @@ public sealed record AddressAssessmentDto(
     string EvidencePointer,
     IReadOnlyList<ValidationIssueDto> Issues);
 
-/// <summary>One row of a profile: the dimension value and how its records break down (FR-VAL-006).</summary>
+/// <summary>
+/// One row of a profile: the dimension value and how its records break down (FR-VAL-006).
+/// <see cref="RecordCount"/> counts assessed records only, so it is the denominator of both
+/// readiness percentages; warnings are reported separately because they are neither compliant
+/// nor rejected.
+/// </summary>
 public sealed record ProfileRowDto(
     string Key,
     int RecordCount,
     int CurrentRejectedCount,
     int FutureRejectedCount,
+    int CurrentWarningCount,
+    int FutureWarningCount,
     decimal CurrentReadinessPercent,
     decimal FutureReadinessPercent);
 

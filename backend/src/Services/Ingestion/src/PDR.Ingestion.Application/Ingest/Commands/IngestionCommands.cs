@@ -51,8 +51,10 @@ public sealed class IngestPayloadCommandHandler(
         var options = await inspector.ResolveOptionsAsync(cancellationToken);
         var inspection = FileSafetyInspector.Inspect(request.FileName, request.Format, request.Content, options);
         var sourceCode = request.SourceCode.ToUpperInvariant();
+        // Replay protection is opt-in: without a caller key every submission is a new attempt, so an
+        // unintended re-upload is answered by the duplicate check below rather than silently replayed.
         var idempotencyKey = string.IsNullOrWhiteSpace(request.IdempotencyKey)
-            ? $"{sourceCode}:{inspection.Checksum}:{(request.Reprocess ? Guid.NewGuid().ToString("n") : "once")}"
+            ? $"{sourceCode}:{Guid.NewGuid():n}"
             : request.IdempotencyKey;
 
         // Replaying the same key must return the original outcome rather than ingest twice (FR-ING-005).

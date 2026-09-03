@@ -47,6 +47,17 @@ public sealed class ValidationSecurityTests(SecuredValidationApiFactory factory)
     }
 
     [Fact]
+    public async Task A_rejected_request_carries_a_problem_details_body()
+    {
+        var response = await _client.GetAsync("/api/v1/validation/readiness", Token);
+
+        response.Content.Headers.ContentType!.MediaType.Should().Be("application/problem+json");
+
+        var problem = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(Token);
+        problem.Should().ContainKey("title").And.ContainKey("status");
+    }
+
+    [Fact]
     public async Task Health_probes_stay_anonymous()
     {
         var response = await _client.GetAsync("/health/live", Token);

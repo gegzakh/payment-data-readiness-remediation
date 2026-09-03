@@ -164,6 +164,17 @@ public sealed class IngestionApiTests(IngestionApiFactory factory) : IClassFixtu
     }
 
     [Fact]
+    public async Task Re_uploading_without_an_idempotency_key_is_refused_rather_than_replayed()
+    {
+        var first = await UploadAsync("nokey.csv", Csv, "Csv", sourceCode: "NOKEY-SRC");
+        first.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var second = await UploadAsync("nokey.csv", Csv, "Csv", sourceCode: "NOKEY-SRC");
+
+        second.StatusCode.Should().Be(HttpStatusCode.Conflict);
+    }
+
+    [Fact]
     public async Task Replaying_an_idempotency_key_returns_the_original_batch()
     {
         var first = await ReadBatchAsync(
