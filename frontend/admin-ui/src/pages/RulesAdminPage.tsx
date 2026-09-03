@@ -35,7 +35,7 @@ export function RulesAdminPage() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [rule, setRule] = useState<RuleInput>(emptyRule);
-  const [ruleVersion, setRuleVersion] = useState<number>(1);
+  const [ruleVersion, setRuleVersion] = useState<number | null>(null);
   const [effectiveFrom, setEffectiveFrom] = useState(new Date().toISOString().slice(0, 10));
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['rulesets'] });
@@ -43,7 +43,10 @@ export function RulesAdminPage() {
   const newVersion = useMutation({
     mutationFn: ({ id, copyFrom }: { id: string; copyFrom: number | null }) =>
       addVersion(id, copyFrom, 'Drafted in admin UI'),
-    onSuccess: invalidate,
+    onSuccess: (versionNumber) => {
+      setRuleVersion(versionNumber ?? null);
+      return invalidate();
+    },
   });
 
   const createRule = useMutation({
@@ -63,6 +66,14 @@ export function RulesAdminPage() {
 
   const selected: RulesetDto | undefined =
     rulesets.data?.find((ruleset) => ruleset.id === selectedId) ?? rulesets.data?.[0];
+
+  const draftVersions = selected?.versions.filter((version) => version.status === 'Draft') ?? [];
+
+  // The selected draft disappears once it is activated, so fall back to one that still exists.
+  const targetVersion =
+    draftVersions.find((version) => version.versionNumber === ruleVersion)?.versionNumber ??
+    draftVersions.at(-1)?.versionNumber ??
+    null;
 
   const versionLabel = (version: RulesetVersionDto) =>
     `v${version.versionNumber} · ${version.status}${version.effectiveFrom ? ` from ${version.effectiveFrom}` : ''}`;
@@ -186,20 +197,20 @@ export function RulesAdminPage() {
             <form
               onSubmit={(event) => {
                 event.preventDefault();
-                createRule.mutate({ id: selected.id, versionNumber: ruleVersion, input: rule });
+                if (targetVersion !== null) {
+                  createRule.mutate({ id: selected.id, versionNumber: targetVersion, input: rule });
+                }
               }}
             >
               <h3>Add a rule to a draft version</h3>
               <label>
                 Version{' '}
-                <select onChange={(event) => setRuleVersion(Number(event.target.value))} value={ruleVersion}>
-                  {selected.versions
-                    .filter((version) => version.status === 'Draft')
-                    .map((version) => (
-                      <option key={version.id} value={version.versionNumber}>
-                        v{version.versionNumber}
-                      </option>
-                    ))}
+                <select onChange={(event) => setRuleVersion(Number(event.target.value))} value={targetVersion ?? ''}>
+                  {draftVersions.map((version) => (
+                    <option key={version.id} value={version.versionNumber}>
+                      v{version.versionNumber}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label>
@@ -261,7 +272,7 @@ export function RulesAdminPage() {
                 Message{' '}
                 <input onChange={(event) => setRule({ ...rule, message: event.target.value })} value={rule.message} />
               </label>
-              <button disabled={createRule.isPending} type="submit">
+              <button disabled={createRule.isPending || targetVersion === null} type="submit">
                 Add rule
               </button>
               {createRule.isError && <p className="error">{createRule.error.message}</p>}
