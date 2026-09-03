@@ -74,7 +74,8 @@ public sealed class ReportingApiTests(ReportingApiFactory factory) : IClassFixtu
         var client = factory.CreateClient();
 
         var response = await client.GetAsync(
-            new Uri("/api/v1/reporting/dashboards/executive/drill/Nonsense", UriKind.Relative));
+            new Uri("/api/v1/reporting/dashboards/executive/drill/Nonsense", UriKind.Relative),
+            TestContext.Current.CancellationToken);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -85,8 +86,9 @@ public sealed class ReportingApiTests(ReportingApiFactory factory) : IClassFixtu
         var client = factory.CreateClient();
 
         var response = await client.GetAsync(
-            new Uri("/api/v1/reporting/dashboards/executive/export", UriKind.Relative));
-        var csv = await response.Content.ReadAsStringAsync();
+            new Uri("/api/v1/reporting/dashboards/executive/export", UriKind.Relative),
+            TestContext.Current.CancellationToken);
+        var csv = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Content.Headers.ContentType!.MediaType.Should().Be("text/csv");
