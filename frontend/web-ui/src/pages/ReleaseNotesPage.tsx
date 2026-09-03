@@ -15,6 +15,13 @@ export function ReleaseNotesPage() {
     queryFn: () => getReleases({ page, pageSize, component: component || undefined }),
   });
 
+  // The effective size can sit outside the allowed list (an administrator may set any default),
+  // so it is offered as well rather than letting the select show a size the server is not using.
+  const effectivePageSize = pageSize ?? releases.data?.pageSize;
+  const options = [...new Set([...(pageSizes.data ?? []), ...(effectivePageSize ? [effectivePageSize] : [])])].sort(
+    (left, right) => left - right,
+  );
+
   return (
     <section>
       <h1>Release notes</h1>
@@ -39,9 +46,9 @@ export function ReleaseNotesPage() {
               setPageSize(Number(event.target.value));
               setPage(1);
             }}
-            value={pageSize ?? releases.data?.pageSize ?? ''}
+            value={effectivePageSize ?? ''}
           >
-            {(pageSizes.data ?? []).map((size) => (
+            {options.map((size) => (
               <option key={size} value={size}>
                 {size}
               </option>

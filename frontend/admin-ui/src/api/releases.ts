@@ -55,9 +55,10 @@ export interface CreateReleaseInput {
   entries?: ReleaseEntryInput[];
 }
 
-export const getReleases = (page: number, pageSize?: number) =>
+/** Drafts are only readable with authoring rights; asking for them without is rejected with 403. */
+export const getReleases = (page: number, includeDrafts: boolean, pageSize?: number) =>
   apiGet<PagedResult<ReleaseDto>>(
-    `/api/v1/releases?includeDrafts=true&page=${page}${pageSize ? `&pageSize=${pageSize}` : ''}`,
+    `/api/v1/releases?includeDrafts=${includeDrafts}&page=${page}${pageSize ? `&pageSize=${pageSize}` : ''}`,
   );
 
 export const createRelease = (input: CreateReleaseInput) => apiPost<string>('/api/v1/admin/releases', input);

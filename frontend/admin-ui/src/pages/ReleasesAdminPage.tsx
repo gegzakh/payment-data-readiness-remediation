@@ -5,7 +5,12 @@ import { ReleaseForm } from '../components/ReleaseForm';
 
 export function ReleasesAdminPage() {
   const queryClient = useQueryClient();
-  const releases = useQuery({ queryKey: ['admin-releases'], queryFn: () => getReleases(1) });
+  const canWrite = hasPermission('releasenotes.write');
+  const canPublish = hasPermission('releasenotes.publish');
+  const releases = useQuery({
+    queryKey: ['admin-releases', canWrite],
+    queryFn: () => getReleases(1, canWrite),
+  });
 
   const create = useMutation({
     mutationFn: (input: CreateReleaseInput) => createRelease(input),
@@ -17,9 +22,6 @@ export function ReleasesAdminPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-releases'] }),
   });
 
-  const canWrite = hasPermission('releasenotes.write');
-  const canPublish = hasPermission('releasenotes.publish');
-
   return (
     <section>
       <h1>Releases</h1>
@@ -28,6 +30,7 @@ export function ReleasesAdminPage() {
       {create.isError && <p className="error">{create.error.message}</p>}
 
       {releases.isPending && <p>Loading…</p>}
+      {releases.isError && <p className="error">Releases could not be loaded: {releases.error.message}</p>}
       <table className="table">
         <thead>
           <tr>
@@ -56,6 +59,7 @@ export function ReleasesAdminPage() {
           ))}
         </tbody>
       </table>
+      {releases.data?.items.length === 0 && <p className="muted">No releases yet.</p>}
       {publish.isError && <p className="error">{publish.error.message}</p>}
     </section>
   );

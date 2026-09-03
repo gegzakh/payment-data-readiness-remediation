@@ -18,6 +18,8 @@ export function SettingsPage() {
     <section>
       <h1>Runtime settings</h1>
       <p className="muted">Changes apply immediately; no redeploy is required.</p>
+      {settings.isPending && <p>Loading…</p>}
+      {settings.isError && <p className="error">Settings could not be loaded: {settings.error.message}</p>}
       <table className="table">
         <thead>
           <tr>
