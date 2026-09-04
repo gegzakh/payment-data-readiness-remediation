@@ -8,13 +8,17 @@ upcoming payment-scheme validation (starting with the end of unstructured addres
 - Layering, patterns and per-service design: `docs/architecture/LOW_LEVEL_DESIGN.md`
 - Repository conventions for contributors and agents: `AGENTS.md`
 
-## What is implemented (phase 0)
+## What is implemented
 
 | Piece | Location |
 | --- | --- |
 | Shared building blocks (errors, results, logging, correlation, auth, persistence, settings, web defaults) | `backend/src/BuildingBlocks` |
 | API gateway (YARP) | `backend/src/Gateway/PDR.Gateway` |
 | Release Notes service (domain → API, EF migrations, seeding, unit/integration/security tests) | `backend/src/Services/ReleaseNotes` |
+| Rules service (versioned, dated scheme rulesets) and Audit service (hash-chained ledger) | `backend/src/Services/{Rules,Audit}` |
+| Sources service (inventory, ISO 20022 field mappings, lineage, scan coverage, owner attestation) | `backend/src/Services/Sources` |
+| Ingestion service (upload safety, quarantine, ISO 20022 XML + CSV parsing, batch reconciliation) | `backend/src/Services/Ingestion` |
+| Validation service (address classification, current vs post-cutover rules, readiness, payments at risk) | `backend/src/Services/Validation` |
 | Public web UI with the release-notes page | `frontend/web-ui` |
 | Admin UI (release authoring, runtime settings) | `frontend/admin-ui` |
 | Local stack: PostgreSQL, Keycloak, RabbitMQ, Redis, MinIO, Seq, MailHog | `deploy/docker-compose.yml` |
@@ -28,16 +32,23 @@ cd backend
 dotnet run --project src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Api   # :5101, migrates + seeds on start
 dotnet run --project src/Services/Rules/src/PDR.Rules.Api                 # :5102
 dotnet run --project src/Services/Audit/src/PDR.Audit.Api                 # :5103
+dotnet run --project src/Services/Sources/src/PDR.Sources.Api             # :5104
+dotnet run --project src/Services/Ingestion/src/PDR.Ingestion.Api         # :5105
+dotnet run --project src/Services/Validation/src/PDR.Validation.Api       # :5106
 dotnet run --project src/Gateway/PDR.Gateway                              # :5100
 
 cd ../frontend/web-ui && npm install && npm run dev        # :5173
 cd ../admin-ui && npm install && npm run dev               # :5174
 ```
 
-- API reference (Scalar): `/scalar/v1` on each service (`:5101`, `:5102`, `:5103`), OpenAPI document at
+- API reference (Scalar): `/scalar/v1` on each service (`:5101`–`:5106`), OpenAPI document at
   `/openapi/v1.json`
-- Admin UI: Rules (scheme rulesets, versions, activation and rollback), Audit (ledger search and chain
-  verification), Releases and Settings
+- Admin UI: Readiness (portfolio readiness today and after the cutover, exposure profiles, record
+  drill-down), Sources (inventory, mappings, lineage, attestation), Ingestion (upload, batches, parsed
+  records), Rules (versions, activation and rollback), Audit (ledger search and chain verification),
+  Releases and Settings
+- Sample payloads to upload on the Ingestion screen: `samples/pain.001-sample.xml` and
+  `samples/parties.csv` (source code `HUB-EU` is seeded)
 - Keycloak: <http://localhost:8080> (`admin`/`admin`); realm `pdr` ships `pdr-admin`/`pdr-admin`
   (all permissions) and `pdr-user`/`pdr-user` (read only)
 - Health: `/health/live`, `/health/ready` on every service

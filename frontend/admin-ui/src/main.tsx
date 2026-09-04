@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { App } from './App';
 import { AuditPage } from './pages/AuditPage';
+import { IngestionPage } from './pages/IngestionPage';
+import { ReadinessPage } from './pages/ReadinessPage';
+import { SourcesPage } from './pages/SourcesPage';
 import { ReleasesAdminPage } from './pages/ReleasesAdminPage';
 import { RulesAdminPage } from './pages/RulesAdminPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -22,7 +25,10 @@ initKeycloak()
           <BrowserRouter>
             <Routes>
               <Route element={<App />} path="/">
-                <Route element={<Navigate replace to="/rules" />} index />
+                <Route element={<Navigate replace to="/readiness" />} index />
+                <Route element={<ReadinessPage />} path="readiness" />
+                <Route element={<SourcesPage />} path="sources" />
+                <Route element={<IngestionPage />} path="ingestion" />
                 <Route element={<RulesAdminPage />} path="rules" />
                 <Route element={<AuditPage />} path="audit" />
                 <Route element={<ReleasesAdminPage />} path="releases" />

@@ -27,6 +27,29 @@ public static class Permissions
         public const string Verify = "audit.verify";
     }
 
+    public static class Sources
+    {
+        public const string Read = "sources.read";
+        public const string Write = "sources.write";
+        public const string Attest = "sources.attest";
+    }
+
+    public static class Ingestion
+    {
+        public const string Read = "ingestion.read";
+        public const string Write = "ingestion.write";
+        public const string Manage = "ingestion.manage";
+    }
+
+    public static class Validation
+    {
+        public const string Read = "validation.read";
+        public const string Run = "validation.run";
+
+        /// <summary>Sees unmasked address values when drilling down from an aggregate (FR-VAL-009).</summary>
+        public const string DrillDown = "validation.drilldown";
+    }
+
     public static class Settings
     {
         public const string Read = "settings.read";
@@ -44,6 +67,15 @@ public static class Permissions
         Audit.Read,
         Audit.Write,
         Audit.Verify,
+        Sources.Read,
+        Sources.Write,
+        Sources.Attest,
+        Ingestion.Read,
+        Ingestion.Write,
+        Ingestion.Manage,
+        Validation.Read,
+        Validation.Run,
+        Validation.DrillDown,
         Settings.Read,
         Settings.Write
     ];

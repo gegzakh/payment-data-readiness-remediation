@@ -48,4 +48,37 @@
     <Project Path="src/Services/Rules/tests/PDR.Rules.IntegrationTests/PDR.Rules.IntegrationTests.csproj" />
     <Project Path="src/Services/Rules/tests/PDR.Rules.UnitTests/PDR.Rules.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/src/Services/Sources/" />
+  <Folder Name="/src/Services/Sources/src/">
+    <Project Path="src/Services/Sources/src/PDR.Sources.Api/PDR.Sources.Api.csproj" />
+    <Project Path="src/Services/Sources/src/PDR.Sources.Application/PDR.Sources.Application.csproj" />
+    <Project Path="src/Services/Sources/src/PDR.Sources.Domain/PDR.Sources.Domain.csproj" />
+    <Project Path="src/Services/Sources/src/PDR.Sources.Infrastructure/PDR.Sources.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Sources/tests/">
+    <Project Path="src/Services/Sources/tests/PDR.Sources.IntegrationTests/PDR.Sources.IntegrationTests.csproj" />
+    <Project Path="src/Services/Sources/tests/PDR.Sources.UnitTests/PDR.Sources.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Ingestion/" />
+  <Folder Name="/src/Services/Ingestion/src/">
+    <Project Path="src/Services/Ingestion/src/PDR.Ingestion.Api/PDR.Ingestion.Api.csproj" />
+    <Project Path="src/Services/Ingestion/src/PDR.Ingestion.Application/PDR.Ingestion.Application.csproj" />
+    <Project Path="src/Services/Ingestion/src/PDR.Ingestion.Domain/PDR.Ingestion.Domain.csproj" />
+    <Project Path="src/Services/Ingestion/src/PDR.Ingestion.Infrastructure/PDR.Ingestion.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Ingestion/tests/">
+    <Project Path="src/Services/Ingestion/tests/PDR.Ingestion.IntegrationTests/PDR.Ingestion.IntegrationTests.csproj" />
+    <Project Path="src/Services/Ingestion/tests/PDR.Ingestion.UnitTests/PDR.Ingestion.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Validation/" />
+  <Folder Name="/src/Services/Validation/src/">
+    <Project Path="src/Services/Validation/src/PDR.Validation.Api/PDR.Validation.Api.csproj" />
+    <Project Path="src/Services/Validation/src/PDR.Validation.Application/PDR.Validation.Application.csproj" />
+    <Project Path="src/Services/Validation/src/PDR.Validation.Domain/PDR.Validation.Domain.csproj" />
+    <Project Path="src/Services/Validation/src/PDR.Validation.Infrastructure/PDR.Validation.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Validation/tests/">
+    <Project Path="src/Services/Validation/tests/PDR.Validation.IntegrationTests/PDR.Validation.IntegrationTests.csproj" />
+    <Project Path="src/Services/Validation/tests/PDR.Validation.UnitTests/PDR.Validation.UnitTests.csproj" />
+  </Folder>
 </Solution>

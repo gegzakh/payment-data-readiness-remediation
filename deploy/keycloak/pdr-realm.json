@@ -67,7 +67,16 @@
         { "name": "audit.write" },
         { "name": "audit.verify" },
         { "name": "settings.read" },
-        { "name": "settings.write" }
+        { "name": "settings.write" },
+        { "name": "sources.read" },
+        { "name": "sources.write" },
+        { "name": "sources.attest" },
+        { "name": "ingestion.read" },
+        { "name": "ingestion.write" },
+        { "name": "ingestion.manage" },
+        { "name": "validation.read" },
+        { "name": "validation.run" },
+        { "name": "validation.drilldown" }
       ]
     }
   },
@@ -92,7 +101,16 @@
           "audit.write",
           "audit.verify",
           "settings.read",
-          "settings.write"
+          "settings.write",
+          "sources.read",
+          "sources.write",
+          "sources.attest",
+          "ingestion.read",
+          "ingestion.write",
+          "ingestion.manage",
+          "validation.read",
+          "validation.run",
+          "validation.drilldown"
         ]
       }
     },
@@ -105,7 +123,14 @@
       "lastName": "User",
       "credentials": [{ "type": "password", "value": "pdr-user", "temporary": false }],
       "clientRoles": {
-        "pdr-api": ["releasenotes.read", "rules.read", "audit.read"]
+        "pdr-api": [
+          "releasenotes.read",
+          "rules.read",
+          "audit.read",
+          "sources.read",
+          "ingestion.read",
+          "validation.read"
+        ]
       }
     }
   ]

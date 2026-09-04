@@ -1,0 +1,11 @@
+messageId,endToEndId,partyRole,partyName,country,town,postCode,street,buildingNumber,addressLines
+MSG-0001,E2E-0001,Debtor,Northwind Trading BV,NL,Amsterdam,1017 CE,Keizersgracht,271,
+MSG-0001,E2E-0001,Creditor,Alpine Metals GmbH,DE,Munich,80331,Marienplatz,8,
+MSG-0002,E2E-0002,Debtor,Riverstone Ltd,GB,,,,,"221B Baker Street, London NW1 6XE"
+MSG-0002,E2E-0002,Creditor,Costa Verde SA,ES,Valencia,,Carrer de Colom,,"Carrer de Colom 12, Valencia"
+MSG-0003,E2E-0003,Debtor,Helios Energy AS,NO,Oslo,0150,Karl Johans gate,22,
+MSG-0003,E2E-0003,Creditor,Unknown Counterparty,,,,,,
+MSG-0004,E2E-0004,Debtor,Baltic Foods UAB,LT,Vilnius,01103,Gedimino prospektas,9,
+MSG-0004,E2E-0004,Creditor,Maison Lefevre SARL,FR,,75008,,,"8 Rue de Rivoli, Paris"
+MSG-0005,E2E-0005,UltimateDebtor,Northwind Trading BV,NL,Amsterdam,1017 CE,Keizersgracht,271,
+MSG-0005,E2E-0005,UltimateCreditor,Adriatic Shipping doo,HR,Split,21000,Obala kneza Domagoja,3,

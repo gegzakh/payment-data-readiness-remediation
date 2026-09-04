@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.09">
+  <CstmrCdtTrfInitn>
+    <GrpHdr>
+      <MsgId>MSG-XML-0001</MsgId>
+      <CreDtTm>2026-03-02T09:15:00</CreDtTm>
+      <NbOfTxs>3</NbOfTxs>
+    </GrpHdr>
+    <PmtInf>
+      <PmtInfId>PMT-0001</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <Dbtr>
+        <Nm>Northwind Trading BV</Nm>
+        <PstlAdr>
+          <StrtNm>Keizersgracht</StrtNm>
+          <BldgNb>271</BldgNb>
+          <PstCd>1017 CE</PstCd>
+          <TwnNm>Amsterdam</TwnNm>
+          <Ctry>NL</Ctry>
+        </PstlAdr>
+      </Dbtr>
+      <CdtTrfTxInf>
+        <PmtId>
+          <EndToEndId>E2E-XML-0001</EndToEndId>
+        </PmtId>
+        <Cdtr>
+          <Nm>Alpine Metals GmbH</Nm>
+          <PstlAdr>
+            <StrtNm>Marienplatz</StrtNm>
+            <BldgNb>8</BldgNb>
+            <PstCd>80331</PstCd>
+            <TwnNm>Munich</TwnNm>
+            <Ctry>DE</Ctry>
+          </PstlAdr>
+        </Cdtr>
+      </CdtTrfTxInf>
+      <CdtTrfTxInf>
+        <PmtId>
+          <EndToEndId>E2E-XML-0002</EndToEndId>
+        </PmtId>
+        <Cdtr>
+          <Nm>Riverstone Ltd</Nm>
+          <PstlAdr>
+            <AdrLine>221B Baker Street</AdrLine>
+            <AdrLine>London NW1 6XE</AdrLine>
+            <Ctry>GB</Ctry>
+          </PstlAdr>
+        </Cdtr>
+      </CdtTrfTxInf>
+      <CdtTrfTxInf>
+        <PmtId>
+          <EndToEndId>E2E-XML-0003</EndToEndId>
+        </PmtId>
+        <Cdtr>
+          <Nm>Maison Lefevre SARL</Nm>
+        </Cdtr>
+        <UltmtCdtr>
+          <Nm>Adriatic Shipping doo</Nm>
+          <PstlAdr>
+            <StrtNm>Obala kneza Domagoja</StrtNm>
+            <BldgNb>3</BldgNb>
+            <TwnNm>Split</TwnNm>
+            <Ctry>HR</Ctry>
+          </PstlAdr>
+        </UltmtCdtr>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
+</Document>
