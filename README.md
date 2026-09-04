@@ -26,13 +26,18 @@ docker compose -f deploy/docker-compose.yml up -d          # infrastructure + Ke
 
 cd backend
 dotnet run --project src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Api   # :5101, migrates + seeds on start
+dotnet run --project src/Services/Rules/src/PDR.Rules.Api                 # :5102
+dotnet run --project src/Services/Audit/src/PDR.Audit.Api                 # :5103
 dotnet run --project src/Gateway/PDR.Gateway                              # :5100
 
 cd ../frontend/web-ui && npm install && npm run dev        # :5173
 cd ../admin-ui && npm install && npm run dev               # :5174
 ```
 
-- API reference (Scalar): <http://localhost:5101/scalar/v1>, OpenAPI document at `/openapi/v1.json`
+- API reference (Scalar): `/scalar/v1` on each service (`:5101`, `:5102`, `:5103`), OpenAPI document at
+  `/openapi/v1.json`
+- Admin UI: Rules (scheme rulesets, versions, activation and rollback), Audit (ledger search and chain
+  verification), Releases and Settings
 - Keycloak: <http://localhost:8080> (`admin`/`admin`); realm `pdr` ships `pdr-admin`/`pdr-admin`
   (all permissions) and `pdr-user`/`pdr-user` (read only)
 - Health: `/health/live`, `/health/ready` on every service

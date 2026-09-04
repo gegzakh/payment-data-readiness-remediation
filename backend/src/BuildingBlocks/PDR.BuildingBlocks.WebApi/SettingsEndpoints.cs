@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using PDR.BuildingBlocks.Persistence.Settings;
 using PDR.BuildingBlocks.Security;
 
-namespace PDR.ReleaseNotes.Api.Endpoints;
+namespace PDR.BuildingBlocks.WebApi;
 
 public sealed record SettingDto(string Key, string Value, string ValueType, string? Description);
 

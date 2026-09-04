@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using PDR.BuildingBlocks.Core.Correlation;
 using PDR.BuildingBlocks.Domain;
+using PDR.BuildingBlocks.Persistence.Conventions;
 using PDR.BuildingBlocks.Persistence.Outbox;
 using PDR.BuildingBlocks.Persistence.Settings;
 
@@ -17,6 +18,12 @@ public abstract class BaseDbContext(DbContextOptions options, IAuditContext audi
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Conventions.Add(_ => new ClientGeneratedKeysConvention());
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

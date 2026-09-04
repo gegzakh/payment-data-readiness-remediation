@@ -60,6 +60,12 @@
         { "name": "releasenotes.read" },
         { "name": "releasenotes.write" },
         { "name": "releasenotes.publish" },
+        { "name": "rules.read" },
+        { "name": "rules.write" },
+        { "name": "rules.activate" },
+        { "name": "audit.read" },
+        { "name": "audit.write" },
+        { "name": "audit.verify" },
         { "name": "settings.read" },
         { "name": "settings.write" }
       ]
@@ -79,6 +85,12 @@
           "releasenotes.read",
           "releasenotes.write",
           "releasenotes.publish",
+          "rules.read",
+          "rules.write",
+          "rules.activate",
+          "audit.read",
+          "audit.write",
+          "audit.verify",
           "settings.read",
           "settings.write"
         ]
@@ -93,7 +105,7 @@
       "lastName": "User",
       "credentials": [{ "type": "password", "value": "pdr-user", "temporary": false }],
       "clientRoles": {
-        "pdr-api": ["releasenotes.read"]
+        "pdr-api": ["releasenotes.read", "rules.read", "audit.read"]
       }
     }
   ]
