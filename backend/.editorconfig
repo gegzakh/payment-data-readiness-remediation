@@ -1,0 +1,46 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,csproj,props,targets}]
+indent_size = 2
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+dotnet_sort_system_directives_first = true
+
+# Naming conventions deliberately favour C#/.NET idiom over cross-language interop rules.
+dotnet_diagnostic.CA1716.severity = none
+# Static factory members on generic result/paging types are idiomatic here.
+dotnet_diagnostic.CA1000.severity = none
+# LoggerMessage source generators are not worth the ceremony for low-frequency log statements.
+dotnet_diagnostic.CA1848.severity = none
+# Log arguments here are cheap property reads; guarding every call site adds noise, not value.
+dotnet_diagnostic.CA1873.severity = suggestion
+# Library code runs in ASP.NET Core, which has no synchronisation context.
+dotnet_diagnostic.CA2007.severity = none
+# Collection properties as arrays/records are intentional in DTOs.
+dotnet_diagnostic.CA1819.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA2227.severity = none
+# Exception messages and log templates are English-only by policy (InvariantGlobalization).
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1305.severity = suggestion
+dotnet_diagnostic.CA1310.severity = suggestion
+
+[**/*Tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+# EF Core scaffolds migrations; they are generated artefacts and are not hand-styled.
+[**/Persistence/Migrations/*.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.IDE0161.severity = none

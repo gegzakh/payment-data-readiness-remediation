@@ -1,0 +1,100 @@
+{
+  "realm": "pdr",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "accessTokenLifespan": 1800,
+  "clients": [
+    {
+      "clientId": "pdr-api",
+      "name": "PDR APIs",
+      "enabled": true,
+      "publicClient": false,
+      "bearerOnly": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "secret": "pdr-api-dev-secret",
+      "defaultRoles": [],
+      "protocolMappers": [
+        {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "pdr-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "pdr-web",
+      "name": "PDR Web UI",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "rootUrl": "http://localhost:5173",
+      "redirectUris": ["http://localhost:5173/*", "http://localhost:5174/*"],
+      "webOrigins": ["http://localhost:5173", "http://localhost:5174"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience-pdr-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "pdr-api",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "roles": {
+    "client": {
+      "pdr-api": [
+        { "name": "releasenotes.read" },
+        { "name": "releasenotes.write" },
+        { "name": "releasenotes.publish" },
+        { "name": "settings.read" },
+        { "name": "settings.write" }
+      ]
+    }
+  },
+  "users": [
+    {
+      "username": "pdr-admin",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "pdr-admin@example.local",
+      "firstName": "Pat",
+      "lastName": "Admin",
+      "credentials": [{ "type": "password", "value": "pdr-admin", "temporary": false }],
+      "clientRoles": {
+        "pdr-api": [
+          "releasenotes.read",
+          "releasenotes.write",
+          "releasenotes.publish",
+          "settings.read",
+          "settings.write"
+        ]
+      }
+    },
+    {
+      "username": "pdr-user",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "pdr-user@example.local",
+      "firstName": "Sam",
+      "lastName": "User",
+      "credentials": [{ "type": "password", "value": "pdr-user", "temporary": false }],
+      "clientRoles": {
+        "pdr-api": ["releasenotes.read"]
+      }
+    }
+  ]
+}

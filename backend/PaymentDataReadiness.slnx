@@ -1,0 +1,29 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Application/PDR.BuildingBlocks.Application.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Core/PDR.BuildingBlocks.Core.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Domain/PDR.BuildingBlocks.Domain.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Messaging/PDR.BuildingBlocks.Messaging.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Observability/PDR.BuildingBlocks.Observability.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Persistence/PDR.BuildingBlocks.Persistence.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Security/PDR.BuildingBlocks.Security.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.Testing/PDR.BuildingBlocks.Testing.csproj" />
+    <Project Path="src/BuildingBlocks/PDR.BuildingBlocks.WebApi/PDR.BuildingBlocks.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/Gateway/">
+    <Project Path="src/Gateway/PDR.Gateway/PDR.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/ReleaseNotes/" />
+  <Folder Name="/src/Services/ReleaseNotes/src/">
+    <Project Path="src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Api/PDR.ReleaseNotes.Api.csproj" />
+    <Project Path="src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Application/PDR.ReleaseNotes.Application.csproj" />
+    <Project Path="src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Domain/PDR.ReleaseNotes.Domain.csproj" />
+    <Project Path="src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Infrastructure/PDR.ReleaseNotes.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/ReleaseNotes/tests/">
+    <Project Path="src/Services/ReleaseNotes/tests/PDR.ReleaseNotes.IntegrationTests/PDR.ReleaseNotes.IntegrationTests.csproj" />
+    <Project Path="src/Services/ReleaseNotes/tests/PDR.ReleaseNotes.UnitTests/PDR.ReleaseNotes.UnitTests.csproj" />
+  </Folder>
+</Solution>

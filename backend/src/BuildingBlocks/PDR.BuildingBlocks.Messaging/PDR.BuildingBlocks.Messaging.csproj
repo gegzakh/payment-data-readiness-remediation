@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PDR.BuildingBlocks.Core\PDR.BuildingBlocks.Core.csproj" />
+    <ProjectReference Include="..\PDR.BuildingBlocks.Persistence\PDR.BuildingBlocks.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>
