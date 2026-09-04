@@ -22,6 +22,7 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         await SeedRemediationReleaseAsync(cancellationToken);
         await SeedSimulationReleaseAsync(cancellationToken);
         await SeedHardeningReleaseAsync(cancellationToken);
+        await SeedContainerReleaseAsync(cancellationToken);
     }
 
     private async Task SeedSettingsAsync(CancellationToken cancellationToken)
@@ -374,6 +375,41 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
             "Platform",
             "Operations runbook and load smoke test",
             "Startup order, health probes, migration locking, the settings that change behaviour under load, delivery recovery, correlation-id tracing and backup are documented in one runbook, and a k6 smoke test exercises the read surface and the dashboards concurrently.",
+            sortOrder: 1,
+            references: null);
+
+        release.Publish("system", clock.UtcNow);
+
+        context.Releases.Add(release);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedContainerReleaseAsync(CancellationToken cancellationToken)
+    {
+        if (await ExistsAsync("1.0.1", cancellationToken))
+        {
+            return;
+        }
+
+        var release = Release.CreateDraft(
+            "1.0.1",
+            "Containerised local deployment",
+            DateOnly.FromDateTime(clock.UtcNow.UtcDateTime),
+            "The whole platform now starts as containers from a single compose command, so a laptop no longer needs the .NET SDK, Node or a service-by-service startup order.");
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Platform",
+            "Full stack in Docker with one command",
+            "Images for every service, the gateway and both front ends, wired to infrastructure over the compose network, published on the same ports as the from-source setup: public UI on 5173, admin UI on 5174, gateway and API reference on 5100.",
+            sortOrder: 0,
+            references: null);
+
+        release.AddEntry(
+            ReleaseEntryType.Fix,
+            "Platform",
+            "Tokens validated when Keycloak is reached on two hostnames",
+            "Services can read the discovery document over the container network while accepting the browser-facing issuer, so sign-in works in containers without a hostname trick on the client.",
             sortOrder: 1,
             references: null);
 

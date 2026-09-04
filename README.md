@@ -28,8 +28,41 @@ upcoming payment-scheme validation (starting with the end of unstructured addres
 | Public web UI with the release-notes page | `frontend/web-ui` |
 | Admin UI (release authoring, runtime settings) | `frontend/admin-ui` |
 | Local stack: PostgreSQL, Keycloak, RabbitMQ, Redis, MinIO, Seq, MailHog | `deploy/docker-compose.yml` |
+| Everything above as containers (infrastructure + services + gateway + both UIs) | `deploy/docker-compose.full.yml` |
 
-## Run it locally
+## Run everything in Docker
+
+One command brings up infrastructure, all ten services, the gateway and both front ends (Docker Desktop
+or Docker Engine with Compose v2.20+, ~8 GB of memory):
+
+```bash
+mkdir -p ~/Documents/Repo && cd ~/Documents/Repo
+git clone https://github.com/gegzakh/payment-data-readiness-remediation.git
+cd payment-data-readiness-remediation
+git checkout dev
+docker compose -f deploy/docker-compose.full.yml up -d --build   # first build takes a few minutes
+```
+
+| URL | What |
+| --- | --- |
+| <http://localhost:5173> | Public UI (release notes) |
+| <http://localhost:5174> | Admin UI — sign in with `pdr-admin`/`pdr-admin` |
+| <http://localhost:5100/scalar/v1> | API reference through the gateway |
+| <http://localhost:8080> | Keycloak (`admin`/`admin`) |
+| <http://localhost:5341> | Seq logs |
+
+```bash
+curl -f http://localhost:5100/health/ready                       # gateway; services are :5101-:5110
+docker compose -f deploy/docker-compose.full.yml logs -f gateway
+docker compose -f deploy/docker-compose.full.yml down            # stop; add -v to reset the databases
+```
+
+The passwords above are local development defaults from `deploy/keycloak/pdr-realm.json`; they are not
+usable outside this compose stack, which binds every port to localhost only. Databases are created on
+first start of an empty PostgreSQL volume by `deploy/postgres/init-databases.sh` — after adding a service,
+recreate the volume with `down -v`.
+
+## Run it from source
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d          # infrastructure + Keycloak realm import

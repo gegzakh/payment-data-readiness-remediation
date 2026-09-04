@@ -14,6 +14,12 @@ public sealed class KeycloakOptions
 
     public string Authority { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Discovery document to read instead of the one derived from <see cref="Authority"/>, for deployments where
+    /// the browser and the services reach Keycloak on different hosts (container network versus published port).
+    /// </summary>
+    public string MetadataAddress { get; set; } = string.Empty;
+
     public string Audience { get; set; } = "pdr-api";
 
     /// <summary>Keycloak client whose roles are mapped to PDR permissions.</summary>
@@ -46,6 +52,12 @@ public static class KeycloakAuthenticationExtensions
             .AddJwtBearer(jwt =>
             {
                 jwt.Authority = options.Authority;
+
+                if (!string.IsNullOrWhiteSpace(options.MetadataAddress))
+                {
+                    jwt.MetadataAddress = options.MetadataAddress;
+                }
+
                 jwt.Audience = options.Audience;
                 jwt.RequireHttpsMetadata = options.RequireHttpsMetadata;
                 jwt.MapInboundClaims = false;
