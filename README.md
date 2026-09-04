@@ -19,6 +19,7 @@ upcoming payment-scheme validation (starting with the end of unstructured addres
 | Sources service (inventory, ISO 20022 field mappings, lineage, scan coverage, owner attestation) | `backend/src/Services/Sources` |
 | Ingestion service (upload safety, quarantine, ISO 20022 XML + CSV parsing, batch reconciliation) | `backend/src/Services/Ingestion` |
 | Validation service (address classification, current vs post-cutover rules, readiness, payments at risk) | `backend/src/Services/Validation` |
+| Remediation service (cases, proposals, maker-checker, campaigns, reversible write-back) | `backend/src/Services/Remediation` |
 | Public web UI with the release-notes page | `frontend/web-ui` |
 | Admin UI (release authoring, runtime settings) | `frontend/admin-ui` |
 | Local stack: PostgreSQL, Keycloak, RabbitMQ, Redis, MinIO, Seq, MailHog | `deploy/docker-compose.yml` |
@@ -35,22 +36,25 @@ dotnet run --project src/Services/Audit/src/PDR.Audit.Api                 # :510
 dotnet run --project src/Services/Sources/src/PDR.Sources.Api             # :5104
 dotnet run --project src/Services/Ingestion/src/PDR.Ingestion.Api         # :5105
 dotnet run --project src/Services/Validation/src/PDR.Validation.Api       # :5106
+dotnet run --project src/Services/Remediation/src/PDR.Remediation.Api     # :5107
 dotnet run --project src/Gateway/PDR.Gateway                              # :5100
 
 cd ../frontend/web-ui && npm install && npm run dev        # :5173
 cd ../admin-ui && npm install && npm run dev               # :5174
 ```
 
-- API reference (Scalar): `/scalar/v1` on each service (`:5101`–`:5106`), OpenAPI document at
+- API reference (Scalar): `/scalar/v1` on each service (`:5101`–`:5107`), OpenAPI document at
   `/openapi/v1.json`
 - Admin UI: Readiness (portfolio readiness today and after the cutover, exposure profiles, record
   drill-down), Sources (inventory, mappings, lineage, attestation), Ingestion (upload, batches, parsed
-  records), Rules (versions, activation and rollback), Audit (ledger search and chain verification),
+  records), Remediation (funnel, case queue, corrections, evidence, approvals, bulk actions),
+  Write-back (targets, preview, runs, reconciliation, rollback), Rules (versions, activation and rollback), Audit (ledger search and chain verification),
   Releases and Settings
 - Sample payloads to upload on the Ingestion screen: `samples/pain.001-sample.xml` and
   `samples/parties.csv` (source code `HUB-EU` is seeded)
 - Keycloak: <http://localhost:8080> (`admin`/`admin`); realm `pdr` ships `pdr-admin`/`pdr-admin`
-  (all permissions) and `pdr-user`/`pdr-user` (read only)
+  (all permissions), `pdr-user`/`pdr-user` (read only) and `pdr-checker`/`pdr-checker` (approves
+  corrections another user submitted, and runs write-back)
 - Health: `/health/live`, `/health/ready` on every service
 
 ## Checks

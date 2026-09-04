@@ -76,7 +76,11 @@
         { "name": "ingestion.manage" },
         { "name": "validation.read" },
         { "name": "validation.run" },
-        { "name": "validation.drilldown" }
+        { "name": "validation.drilldown" },
+        { "name": "remediation.read" },
+        { "name": "remediation.write" },
+        { "name": "remediation.approve" },
+        { "name": "remediation.writeback" }
       ]
     }
   },
@@ -110,7 +114,34 @@
           "ingestion.manage",
           "validation.read",
           "validation.run",
-          "validation.drilldown"
+          "validation.drilldown",
+          "remediation.read",
+          "remediation.write",
+          "remediation.approve",
+          "remediation.writeback"
+        ]
+      }
+    },
+    {
+      "username": "pdr-checker",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "pdr-checker@example.local",
+      "firstName": "Chris",
+      "lastName": "Checker",
+      "credentials": [{ "type": "password", "value": "pdr-checker", "temporary": false }],
+      "clientRoles": {
+        "pdr-api": [
+          "releasenotes.read",
+          "rules.read",
+          "audit.read",
+          "sources.read",
+          "ingestion.read",
+          "validation.read",
+          "validation.drilldown",
+          "remediation.read",
+          "remediation.approve",
+          "remediation.writeback"
         ]
       }
     },
@@ -129,7 +160,8 @@
           "audit.read",
           "sources.read",
           "ingestion.read",
-          "validation.read"
+          "validation.read",
+          "remediation.read"
         ]
       }
     }
