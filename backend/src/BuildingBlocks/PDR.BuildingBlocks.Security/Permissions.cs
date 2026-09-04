@@ -64,6 +64,52 @@ public static class Permissions
         public const string WriteBack = "remediation.writeback";
     }
 
+    public static class Simulation
+    {
+        public const string Read = "simulation.read";
+
+        /// <summary>Defines scenarios and executes simulation runs (FR-SIM-001).</summary>
+        public const string Write = "simulation.write";
+    }
+
+    public static class Testing
+    {
+        public const string Read = "testing.read";
+
+        /// <summary>Authors test plans and records executions, defects and UAT outcomes (FR-TST-001).</summary>
+        public const string Write = "testing.write";
+    }
+
+    public static class Cutover
+    {
+        public const string Read = "cutover.read";
+
+        /// <summary>Maintains the cutover plan, its criteria and the freeze window (FR-CUT-001).</summary>
+        public const string Write = "cutover.write";
+
+        /// <summary>Signs the go/no-go pack off on behalf of an accountable role (FR-CUT-004).</summary>
+        public const string Approve = "cutover.approve";
+    }
+
+    public static class Reporting
+    {
+        public const string Read = "reporting.read";
+
+        /// <summary>Exports a dashboard or a drill-down with its scope and freshness stamped on it (FR-RPT-002).</summary>
+        public const string Export = "reporting.export";
+    }
+
+    public static class Notifications
+    {
+        public const string Read = "notifications.read";
+
+        /// <summary>Manages own subscriptions and scheduled reports (FR-NTF-001).</summary>
+        public const string Write = "notifications.write";
+
+        /// <summary>Manages webhook endpoints, secrets and delivery retries (FR-API-002).</summary>
+        public const string Admin = "notifications.admin";
+    }
+
     public static class Settings
     {
         public const string Read = "settings.read";
@@ -94,6 +140,18 @@ public static class Permissions
         Remediation.Write,
         Remediation.Approve,
         Remediation.WriteBack,
+        Simulation.Read,
+        Simulation.Write,
+        Testing.Read,
+        Testing.Write,
+        Cutover.Read,
+        Cutover.Write,
+        Cutover.Approve,
+        Reporting.Read,
+        Reporting.Export,
+        Notifications.Read,
+        Notifications.Write,
+        Notifications.Admin,
         Settings.Read,
         Settings.Write
     ];

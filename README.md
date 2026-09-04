@@ -37,18 +37,25 @@ dotnet run --project src/Services/Sources/src/PDR.Sources.Api             # :510
 dotnet run --project src/Services/Ingestion/src/PDR.Ingestion.Api         # :5105
 dotnet run --project src/Services/Validation/src/PDR.Validation.Api       # :5106
 dotnet run --project src/Services/Remediation/src/PDR.Remediation.Api     # :5107
+dotnet run --project src/Services/Simulation/src/PDR.Simulation.Api       # :5108
+dotnet run --project src/Services/Reporting/src/PDR.Reporting.Api         # :5109
+dotnet run --project src/Services/Notifications/src/PDR.Notifications.Api # :5110
 dotnet run --project src/Gateway/PDR.Gateway                              # :5100
 
 cd ../frontend/web-ui && npm install && npm run dev        # :5173
 cd ../admin-ui && npm install && npm run dev               # :5174
 ```
 
-- API reference (Scalar): `/scalar/v1` on each service (`:5101`–`:5107`), OpenAPI document at
+- API reference (Scalar): `/scalar/v1` on each service (`:5101`–`:5110`), OpenAPI document at
   `/openapi/v1.json`
 - Admin UI: Readiness (portfolio readiness today and after the cutover, exposure profiles, record
   drill-down), Sources (inventory, mappings, lineage, attestation), Ingestion (upload, batches, parsed
   records), Remediation (funnel, case queue, corrections, evidence, approvals, bulk actions),
-  Write-back (targets, preview, runs, reconciliation, rollback), Rules (versions, activation and rollback), Audit (ledger search and chain verification),
+  Write-back (targets, preview, runs, reconciliation, rollback), Simulation (scenarios, runs, run
+  comparison), Testing (risk-based test plans, UAT reconciliation), Cutover (entry/exit criteria,
+  go/no-go pack), Dashboards (executive, scheme, source, operations, remediation, testing, cutover with
+  drill-down and CSV export), Notifications (subscriptions, deliveries, scheduled reports),
+  Rules (versions, activation and rollback), Audit (ledger search and chain verification),
   Releases and Settings
 - Sample payloads to upload on the Ingestion screen: `samples/pain.001-sample.xml` and
   `samples/parties.csv` (source code `HUB-EU` is seeded)

@@ -37,6 +37,26 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   return (await response.json()) as T;
 }
 
+/** Downloads a file behind the bearer token; a plain anchor cannot send the Authorization header. */
+export async function apiDownload(path: string, fileName: string): Promise<void> {
+  await keycloak.updateToken(30).catch(() => keycloak.login());
+
+  const response = await fetch(`${baseUrl}${path}`, {
+    headers: { Authorization: `Bearer ${keycloak.token}` },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, await response.text());
+  }
+
+  const url = URL.createObjectURL(await response.blob());
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 export const apiGet = <T>(path: string) => request<T>('GET', path) as Promise<T>;
 export const apiPost = <T>(path: string, body?: unknown) => request<T>('POST', path, body);
 export const apiPut = <T>(path: string, body?: unknown) => request<T>('PUT', path, body);

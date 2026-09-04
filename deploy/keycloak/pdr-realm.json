@@ -80,7 +80,19 @@
         { "name": "remediation.read" },
         { "name": "remediation.write" },
         { "name": "remediation.approve" },
-        { "name": "remediation.writeback" }
+        { "name": "remediation.writeback" },
+        { "name": "simulation.read" },
+        { "name": "simulation.write" },
+        { "name": "testing.read" },
+        { "name": "testing.write" },
+        { "name": "cutover.read" },
+        { "name": "cutover.write" },
+        { "name": "cutover.approve" },
+        { "name": "reporting.read" },
+        { "name": "reporting.export" },
+        { "name": "notifications.read" },
+        { "name": "notifications.write" },
+        { "name": "notifications.admin" }
       ]
     }
   },
@@ -118,7 +130,19 @@
           "remediation.read",
           "remediation.write",
           "remediation.approve",
-          "remediation.writeback"
+          "remediation.writeback",
+          "simulation.read",
+          "simulation.write",
+          "testing.read",
+          "testing.write",
+          "cutover.read",
+          "cutover.write",
+          "cutover.approve",
+          "reporting.read",
+          "reporting.export",
+          "notifications.read",
+          "notifications.write",
+          "notifications.admin"
         ]
       }
     },
@@ -141,7 +165,14 @@
           "validation.drilldown",
           "remediation.read",
           "remediation.approve",
-          "remediation.writeback"
+          "remediation.writeback",
+          "simulation.read",
+          "testing.read",
+          "testing.write",
+          "cutover.read",
+          "cutover.approve",
+          "reporting.read",
+          "notifications.read"
         ]
       }
     },
@@ -161,7 +192,12 @@
           "sources.read",
           "ingestion.read",
           "validation.read",
-          "remediation.read"
+          "remediation.read",
+          "simulation.read",
+          "testing.read",
+          "cutover.read",
+          "reporting.read",
+          "notifications.read"
         ]
       }
     }

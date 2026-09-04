@@ -20,6 +20,7 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         await SeedRulesAndAuditReleaseAsync(cancellationToken);
         await SeedReadinessReleaseAsync(cancellationToken);
         await SeedRemediationReleaseAsync(cancellationToken);
+        await SeedSimulationReleaseAsync(cancellationToken);
     }
 
     private async Task SeedSettingsAsync(CancellationToken cancellationToken)
@@ -270,6 +271,73 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
             "Admin UI",
             "Remediation queue and write-back screens",
             "The queue shows the funnel, filters and case detail with the original values beside the proposal; approvers record decisions, and operators preview, apply, reconcile and roll back write-back runs.",
+            sortOrder: 5,
+            references: null);
+
+        release.Publish("system", clock.UtcNow);
+
+        context.Releases.Add(release);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedSimulationReleaseAsync(CancellationToken cancellationToken)
+    {
+        if (await ExistsAsync("0.5.0", cancellationToken))
+        {
+            return;
+        }
+
+        var release = Release.CreateDraft(
+            "0.5.0",
+            "Simulation, cutover, dashboards and notifications",
+            DateOnly.FromDateTime(clock.UtcNow.UtcDateTime),
+            "Readiness can now be simulated and reproduced, tested against the payment engine, signed off through a go/no-go pack, read from audience dashboards and pushed out as notifications and scheduled reports.");
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Simulation",
+            "Reproducible current, future and remediated scenarios",
+            "A scenario fixes the population, the exclusions, the as-of date and the ruleset; locking it makes every run reproducible. Runs record the population they assessed, what they could not assess and whether the numbers reconcile, and two runs can be compared dimension by dimension.",
+            sortOrder: 0,
+            references: ["FR-SIM-001", "FR-SIM-002"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Testing",
+            "Risk-based test plans with UAT reconciliation",
+            "Plans carry risk-weighted coverage, expected versus actual results, defects, retests and evidence; each sample can be reconciled against what the payment engine or network actually did, and disagreements are surfaced as mismatches rather than averaged away.",
+            sortOrder: 1,
+            references: ["FR-TST-001", "FR-TST-003"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Cutover",
+            "Entry and exit criteria with an evidence-backed go/no-go pack",
+            "Criteria have owners, evidence and blocking status, waivers never read as met, and the pack states the residual exposure, outstanding exceptions, defects, test coverage and operational readiness a signature is accepting — alongside the freeze window, fallback and support model.",
+            sortOrder: 2,
+            references: ["FR-CUT-001", "FR-CUT-002", "FR-CUT-004"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Reporting",
+            "Audience dashboards where every figure states its scope and freshness",
+            "Executive, scheme, source, operations, remediation, testing and cutover dashboards share one scope model — schemes, sources, countries, exclusions and an as-of date — and are stamped with capture time, source freshness, ruleset version and whether they reconcile. Metrics drill into the rows behind them and export as CSV with the same header.",
+            sortOrder: 3,
+            references: ["FR-RPT-001", "FR-RPT-002"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Notifications",
+            "Signed webhooks, ITSM tasks and scheduled reports",
+            "Subscriptions match event patterns and scope with a minimum severity; deliveries are idempotent per publish key, retried with exponential backoff, dead-lettered after the configured attempts and replayable. Webhook and ITSM payloads are HMAC-signed, and dashboards can be scheduled daily, weekly or monthly.",
+            sortOrder: 4,
+            references: ["FR-RPT-004", "FR-API-001"]);
+
+        release.AddEntry(
+            ReleaseEntryType.Feature,
+            "Admin UI",
+            "Simulation, testing, cutover, dashboard and notification screens",
+            "Operators create and run scenarios, compare two runs, work test plans and UAT results, record cutover criteria and sign-offs, read the audience dashboards with drill-down and export, and manage subscriptions, deliveries and scheduled reports.",
             sortOrder: 5,
             references: null);
 

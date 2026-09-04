@@ -4,9 +4,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { App } from './App';
 import { AuditPage } from './pages/AuditPage';
+import { CutoverPage } from './pages/CutoverPage';
+import { DashboardsPage } from './pages/DashboardsPage';
 import { IngestionPage } from './pages/IngestionPage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import { ReadinessPage } from './pages/ReadinessPage';
 import { RemediationPage } from './pages/RemediationPage';
+import { SimulationPage } from './pages/SimulationPage';
+import { TestingPage } from './pages/TestingPage';
 import { WriteBackPage } from './pages/WriteBackPage';
 import { SourcesPage } from './pages/SourcesPage';
 import { ReleasesAdminPage } from './pages/ReleasesAdminPage';
@@ -33,6 +38,11 @@ initKeycloak()
                 <Route element={<IngestionPage />} path="ingestion" />
                 <Route element={<RemediationPage />} path="remediation" />
                 <Route element={<WriteBackPage />} path="writeback" />
+                <Route element={<SimulationPage />} path="simulation" />
+                <Route element={<TestingPage />} path="testing" />
+                <Route element={<CutoverPage />} path="cutover" />
+                <Route element={<DashboardsPage />} path="dashboards" />
+                <Route element={<NotificationsPage />} path="notifications" />
                 <Route element={<RulesAdminPage />} path="rules" />
                 <Route element={<AuditPage />} path="audit" />
                 <Route element={<ReleasesAdminPage />} path="releases" />
