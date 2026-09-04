@@ -6,6 +6,8 @@ upcoming payment-scheme validation (starting with the end of unstructured addres
 - Business and functional requirements: `docs/BUSINESS_REQUIREMENTS.md`, `docs/FUNCTIONAL_REQUIREMENTS.md`
 - Architecture and delivery phases: `docs/architecture/ARCHITECTURE.md`
 - Layering, patterns and per-service design: `docs/architecture/LOW_LEVEL_DESIGN.md`
+- Running the platform (startup order, health, migrations, recovery, tracing): `docs/OPERATIONS.md`
+- Public API and webhook contract: `docs/architecture/PUBLIC_API.md`
 - Repository conventions for contributors and agents: `AGENTS.md`
 
 ## What is implemented
@@ -20,6 +22,9 @@ upcoming payment-scheme validation (starting with the end of unstructured addres
 | Ingestion service (upload safety, quarantine, ISO 20022 XML + CSV parsing, batch reconciliation) | `backend/src/Services/Ingestion` |
 | Validation service (address classification, current vs post-cutover rules, readiness, payments at risk) | `backend/src/Services/Validation` |
 | Remediation service (cases, proposals, maker-checker, campaigns, reversible write-back) | `backend/src/Services/Remediation` |
+| Simulation service (scenarios, reproducible runs, test plans, UAT, cutover and go/no-go) | `backend/src/Services/Simulation` |
+| Reporting service (audience dashboards, drill-down, CSV export, freshness and reconciliation) | `backend/src/Services/Reporting` |
+| Notifications service (subscriptions, signed webhooks/ITSM tasks, retries, scheduled reports) | `backend/src/Services/Notifications` |
 | Public web UI with the release-notes page | `frontend/web-ui` |
 | Admin UI (release authoring, runtime settings) | `frontend/admin-ui` |
 | Local stack: PostgreSQL, Keycloak, RabbitMQ, Redis, MinIO, Seq, MailHog | `deploy/docker-compose.yml` |
@@ -73,4 +78,10 @@ dotnet test PaymentDataReadiness.slnx                # integration tests need Do
 
 cd ../frontend/web-ui  && npm run lint && npm run typecheck && npm test && npm run build
 cd ../admin-ui      && npm run lint && npm run typecheck && npm test && npm run build
+```
+
+Smoke the running stack under concurrent load (k6, thresholds on the read surface and dashboards):
+
+```bash
+k6 run -e GATEWAY=http://localhost:5100 -e TOKEN="$ACCESS_TOKEN" deploy/load/smoke.js
 ```

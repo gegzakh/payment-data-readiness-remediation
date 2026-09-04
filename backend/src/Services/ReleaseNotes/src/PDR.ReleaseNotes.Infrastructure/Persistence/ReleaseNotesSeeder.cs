@@ -21,6 +21,7 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
         await SeedReadinessReleaseAsync(cancellationToken);
         await SeedRemediationReleaseAsync(cancellationToken);
         await SeedSimulationReleaseAsync(cancellationToken);
+        await SeedHardeningReleaseAsync(cancellationToken);
     }
 
     private async Task SeedSettingsAsync(CancellationToken cancellationToken)
@@ -339,6 +340,41 @@ public sealed class ReleaseNotesSeeder(ReleaseNotesDbContext context, IClock clo
             "Simulation, testing, cutover, dashboard and notification screens",
             "Operators create and run scenarios, compare two runs, work test plans and UAT results, record cutover criteria and sign-offs, read the audience dashboards with drill-down and export, and manage subscriptions, deliveries and scheduled reports.",
             sortOrder: 5,
+            references: null);
+
+        release.Publish("system", clock.UtcNow);
+
+        context.Releases.Add(release);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedHardeningReleaseAsync(CancellationToken cancellationToken)
+    {
+        if (await ExistsAsync("1.0.0", cancellationToken))
+        {
+            return;
+        }
+
+        var release = Release.CreateDraft(
+            "1.0.0",
+            "General availability",
+            DateOnly.FromDateTime(clock.UtcNow.UtcDateTime),
+            "The platform is feature complete end to end: sources, ingestion, validation, remediation, simulation, cutover, reporting and notifications, now with the operational documentation and the security and load coverage needed to run it.");
+
+        release.AddEntry(
+            ReleaseEntryType.Security,
+            "Platform",
+            "Authorization and error handling covered by their own tests",
+            "Permission matching, the dynamically created policies, the claims a request is granted and every error-to-status mapping are now verified directly, so a permission cannot silently widen through a prefix or a casing difference and a failure cannot leak internals instead of a problem+json code.",
+            sortOrder: 0,
+            references: null);
+
+        release.AddEntry(
+            ReleaseEntryType.Change,
+            "Platform",
+            "Operations runbook and load smoke test",
+            "Startup order, health probes, migration locking, the settings that change behaviour under load, delivery recovery, correlation-id tracing and backup are documented in one runbook, and a k6 smoke test exercises the read surface and the dashboards concurrently.",
+            sortOrder: 1,
             references: null);
 
         release.Publish("system", clock.UtcNow);
