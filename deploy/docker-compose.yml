@@ -25,6 +25,10 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_HEALTH_ENABLED: "true"
+      KC_HTTP_ENABLED: "true"
+      # Browser-facing issuer; back-channel calls from containers keep their own host.
+      KC_HOSTNAME: http://localhost:8080
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     ports:
       - "8080:8080"
     volumes:

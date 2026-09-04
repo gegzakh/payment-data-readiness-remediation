@@ -1,0 +1,209 @@
+# Full local stack: infrastructure plus every service, the gateway and both front ends.
+#   docker compose -f deploy/docker-compose.full.yml up -d --build
+name: pdr
+
+include:
+  - docker-compose.yml
+
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  depends_on:
+    postgres:
+      condition: service_healthy
+    keycloak:
+      condition: service_started
+
+x-service-environment: &service-environment
+  # Tokens are minted for the browser-facing issuer, but discovery/JWKS is fetched inside the network.
+  Authentication__Keycloak__Authority: http://localhost:8080/realms/pdr
+  Authentication__Keycloak__MetadataAddress: http://keycloak:8080/realms/pdr/.well-known/openid-configuration
+  Authentication__Keycloak__RequireHttpsMetadata: "false"
+  Messaging__Host: rabbitmq
+  Observability__SeqUrl: http://seq
+  Api__AllowedOrigins__0: http://localhost:5173
+  Api__AllowedOrigins__1: http://localhost:5174
+
+services:
+
+  release-notes:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/ReleaseNotes/src/PDR.ReleaseNotes.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_releasenotes;Username=pdr;Password=pdr
+    ports:
+      - "5101:8080"
+
+  rules:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Rules/src/PDR.Rules.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_rules;Username=pdr;Password=pdr
+    ports:
+      - "5102:8080"
+
+  audit:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Audit/src/PDR.Audit.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_audit;Username=pdr;Password=pdr
+    ports:
+      - "5103:8080"
+
+  sources:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Sources/src/PDR.Sources.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_sources;Username=pdr;Password=pdr
+    ports:
+      - "5104:8080"
+
+  ingestion:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Ingestion/src/PDR.Ingestion.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_ingestion;Username=pdr;Password=pdr
+    ports:
+      - "5105:8080"
+
+  validation:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Validation/src/PDR.Validation.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_validation;Username=pdr;Password=pdr
+      Upstream__IngestionBaseUrl: http://ingestion:8080
+      Upstream__RulesBaseUrl: http://rules:8080
+    ports:
+      - "5106:8080"
+
+  remediation:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Remediation/src/PDR.Remediation.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_remediation;Username=pdr;Password=pdr
+      Upstream__ValidationBaseUrl: http://validation:8080
+      Upstream__SourcesBaseUrl: http://sources:8080
+    ports:
+      - "5107:8080"
+
+  simulation:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Simulation/src/PDR.Simulation.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_simulation;Username=pdr;Password=pdr
+      Upstream__ValidationBaseUrl: http://validation:8080
+      Upstream__RemediationBaseUrl: http://remediation:8080
+    ports:
+      - "5108:8080"
+
+  reporting:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Reporting/src/PDR.Reporting.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_reporting;Username=pdr;Password=pdr
+      Upstream__ValidationBaseUrl: http://validation:8080
+      Upstream__RemediationBaseUrl: http://remediation:8080
+      Upstream__SimulationBaseUrl: http://simulation:8080
+    ports:
+      - "5109:8080"
+
+  notifications:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Services/Notifications/src/PDR.Notifications.Api
+    environment:
+      <<: *service-environment
+      Database__ConnectionString: Host=postgres;Port=5432;Database=pdr_notifications;Username=pdr;Password=pdr
+    ports:
+      - "5110:8080"
+
+  gateway:
+    <<: *service-defaults
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        PROJECT: src/Gateway/PDR.Gateway
+    environment:
+      <<: *service-environment
+      ReverseProxy__Clusters__release-notes__Destinations__primary__Address: http://release-notes:8080/
+      ReverseProxy__Clusters__rules__Destinations__primary__Address: http://rules:8080/
+      ReverseProxy__Clusters__audit__Destinations__primary__Address: http://audit:8080/
+      ReverseProxy__Clusters__sources__Destinations__primary__Address: http://sources:8080/
+      ReverseProxy__Clusters__ingestion__Destinations__primary__Address: http://ingestion:8080/
+      ReverseProxy__Clusters__validation__Destinations__primary__Address: http://validation:8080/
+      ReverseProxy__Clusters__remediation__Destinations__primary__Address: http://remediation:8080/
+      ReverseProxy__Clusters__simulation__Destinations__primary__Address: http://simulation:8080/
+      ReverseProxy__Clusters__reporting__Destinations__primary__Address: http://reporting:8080/
+      ReverseProxy__Clusters__notifications__Destinations__primary__Address: http://notifications:8080/
+    ports:
+      - "5100:8080"
+
+  web-ui:
+    restart: unless-stopped
+    build:
+      context: ../frontend/web-ui
+    depends_on:
+      - gateway
+    ports:
+      - "5173:80"
+
+  admin-ui:
+    restart: unless-stopped
+    build:
+      context: ../frontend/admin-ui
+      args:
+        VITE_KEYCLOAK_URL: http://localhost:8080
+        VITE_KEYCLOAK_REALM: pdr
+        VITE_KEYCLOAK_CLIENT_ID: pdr-web
+    depends_on:
+      - gateway
+    ports:
+      - "5174:80"
