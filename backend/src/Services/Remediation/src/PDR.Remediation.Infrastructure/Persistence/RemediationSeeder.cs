@@ -67,6 +67,19 @@ public sealed class RemediationSeeder(RemediationDbContext context) : IDataSeede
 
         if (!await context.WriteBackTargets.AnyAsync(cancellationToken))
         {
+            // HUB-EU is the source the sample payloads and the Sources inventory use, so the shipped
+            // demo path reaches a source it is actually allowed to correct.
+            context.WriteBackTargets.Add(WriteBackTarget.Create(
+                "HUB-EU",
+                WriteBackMode.Api,
+                "country,town,postcode,street,buildingnumber",
+                endpoint: "simulated://hub-eu/parties",
+                exportFormat: null,
+                maintenanceWindow: "Sat 22:00-02:00 UTC",
+                maxRecordsPerRun: WriteBackDefaults.MaxRecordsPerRun,
+                requiresApproval: true,
+                rollbackMethod: "Reverse write of the stored original value"));
+
             context.WriteBackTargets.Add(WriteBackTarget.Create(
                 "CBS",
                 WriteBackMode.Api,
