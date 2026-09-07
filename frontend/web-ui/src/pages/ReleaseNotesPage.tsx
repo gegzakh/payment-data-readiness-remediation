@@ -24,8 +24,11 @@ export function ReleaseNotesPage() {
 
   return (
     <section>
-      <h1>Release notes</h1>
-      <p className="muted">Everything shipped to the platform, newest release first.</p>
+      <header className="hero">
+        <span className="hero__eyebrow">Changelog</span>
+        <h1>Release notes</h1>
+        <p>Everything shipped to the platform, newest release first.</p>
+      </header>
 
       <div className="toolbar">
         <label>
