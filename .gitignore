@@ -10,6 +10,7 @@ dist/
 .vite/
 
 # Local environment
+.DS_Store
 .env
 .env.local
 *.log
