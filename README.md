@@ -7,6 +7,7 @@ upcoming payment-scheme validation (starting with the end of unstructured addres
 - Architecture and delivery phases: `docs/architecture/ARCHITECTURE.md`
 - Layering, patterns and per-service design: `docs/architecture/LOW_LEVEL_DESIGN.md`
 - Running the platform (startup order, health, migrations, recovery, tracing): `docs/OPERATIONS.md`
+- Manual end-to-end test scenarios (sample data, flows, guard rails): `docs/TEST_SCENARIOS.md`
 - Public API and webhook contract: `docs/architecture/PUBLIC_API.md`
 - Repository conventions for contributors and agents: `AGENTS.md`
 
@@ -86,6 +87,8 @@ cd ../admin-ui && npm install && npm run dev               # :5174
 
 - API reference (Scalar): `/scalar/v1` on each service (`:5101`–`:5110`), OpenAPI document at
   `/openapi/v1.json`
+- Admin UI: the fourteen pages are grouped in the sidebar as Assess, Remediate, Prove, Govern and
+  Platform; the sidebar collapses to icons and the theme (light/dark) is remembered per browser
 - Admin UI: Readiness (portfolio readiness today and after the cutover, exposure profiles, record
   drill-down), Sources (inventory, mappings, lineage, attestation), Ingestion (upload, batches, parsed
   records), Remediation (funnel, case queue, corrections, evidence, approvals, bulk actions),
