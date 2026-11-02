@@ -3,7 +3,7 @@
 **Document type:** Business Requirements Document (BRD)  
 **Target state:** Production enterprise platform, not the public demonstration  
 **Status:** Baseline for discovery, scheme/legal validation, estimation, and phased delivery  
-**Version:** 1.0 — 3 September 2026
+**Version:** 1.1 — 2 November 2026
 
 ## 1. Executive summary
 
@@ -24,11 +24,14 @@ The platform must discover affected data across payment channels, standing order
 
 ## 3. Current regulatory baseline
 
-As of this document date, EPC guidance and the applicable 2025 rulebook updates identify **15 November 2026** as the date from which unstructured addresses are no longer permitted for the affected EPC schemes. The EPC's 27 August 2026 communication stated that its timeline remained unchanged until further notice and that it would determine its position at the Payment Scheme Management Board meeting on 9 September 2026.
+As checked on **2 November 2026**, the former **15 November 2026** cutoff is no longer the applicable EPC baseline. The EPC's 29 October decision leaves the replacement end date unset, with a further decision expected by February 2027. February is a decision window, not a new enforcement deadline. Unstructured addresses remain supported under the current rulebooks; institutions should continue preparing for structured-address adoption.
+
+The public demo must show this dated status, not a countdown to the withdrawn date. Its strict-format simulations describe hypothetical future migration exposure, not current scheme rejection rules. The 2025 SCT rulebook version 1.2, effective 30 September 2026, reflects the deferral.
 
 The production platform must therefore:
 
 - keep dates, schemes, versions, countries, formats, validation rules, and effective periods configurable;
+- represent an unset replacement date explicitly; never infer a cutoff from a planned committee meeting;
 - preserve the source and approval of every ruleset;
 - monitor and assess rule changes before activation;
 - run current-state and future-state rules in parallel;
@@ -170,10 +173,9 @@ Production rejects/repairs and upstream format leakage are monitored by scheme/s
 
 ## 14. Authoritative references
 
-- [EPC — November 2026 end-date communication](https://www.europeanpaymentscouncil.eu/news-insights/news/november-2026-end-date-unstructured-address-format-epc-payment-scheme)
+- [EPC — Replacement end-date decision deferred to February 2027](https://www.europeanpaymentscouncil.eu/news-insights/news/epc-defers-setting-new-end-date-unstructured-address-format-until-february-2027)
 - [EPC — Guidance on provision of addresses under EPC payment schemes](https://www.europeanpaymentscouncil.eu/document-library/guidance-documents/epc-guidance-document-provision-addresses-under-epc-payment)
-- [EPC — 2025 SCT rulebook version 1.1](https://www.europeanpaymentscouncil.eu/document-library/rulebooks/2025-sepa-credit-transfer-rulebook-version-11)
-- [EPC — 2025 SDD Core rulebook version 1.1](https://www.europeanpaymentscouncil.eu/document-library/rulebooks/2025-sepa-direct-debit-core-rulebook-version-11)
+- [EPC — 2025 SCT rulebook version 1.2](https://www.europeanpaymentscouncil.eu/document-library/rulebooks/2025-sepa-credit-transfer-rulebook-version-12)
 
 Institution-approved scheme interpretation remains mandatory.
 
